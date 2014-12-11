@@ -1,0 +1,58 @@
+
+Processing mesh...
+MESH READ in 1.29682898521 s
+
+=========================
+MESH DATA:
+- number of vertices: 1024
+- number of faces: 1904
+-- number of boundary faces: 1024
+-- number of internal faces: 880
+- number of cells: 464
+- number of patches: 5
+-- inlet
+-- side
+-- walls
+-- outlet
+-- frontAndRear
+=========================
+
+Writing mesh file...
+   DONE in 0.203215122223 s
+
+tetra not tested yet!
+
+testMesh FINSHED
+Wrote profile results to testMesh.py.lprof
+Timer unit: 1e-06 s
+
+File: pyCFD_geometric_tools/geomTools.py
+Function: quadrangle_area_vect_vert at line 203
+Total time: 0.42325 s
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+   203                                           @profile
+   204                                           def quadrangle_area_vect_vert(vertList, centroidOfElement):
+   205                                               """function to calculate the face normal area vector of a quadrangle
+   206                                                  with respect to the centroid of an element: face normal points outwards"""
+   207      4688         9561      2.0      2.3      pointACoords = vertList[0].coords
+   208      4688         7832      1.7      1.9      pointBCoords = vertList[1].coords
+   209      4688         7824      1.7      1.8      pointCCoords = vertList[2].coords
+   210      4688         7368      1.6      1.7      pointDCoords = vertList[3].coords
+   211      4688       176423     37.6     41.7      areaVect = pyCFD_operators.vector_operations.VecCross(numpy.add(pointCCoords,-pointACoords), numpy.add(pointBCoords,-pointDCoords)) * 0.5
+   212      4688        63976     13.6     15.1      centroidFace = numpy.add(numpy.add(pointACoords,pointBCoords),numpy.add(pointCCoords,pointDCoords)) / 4.0
+   213      4688        32687      7.0      7.7      vectElmFace = numpy.add(centroidFace,-centroidOfElement)
+   214                                           #    cos_value = numpy.dot(areaVect,vectElmFace) / numpy.linalg.norm(areaVect) / numpy.linalg.norm(vectElmFace)
+   215      4688        27175      5.8      6.4      cos_value = cy_geometric_tools.cy_calc_cos(areaVect, vectElmFace)
+   216                                           #    if numpy.allclose(abs(cos_value),1.):
+   217      4688        10359      2.2      2.4      if cy_geometric_tools.cy_value_close(abs(cos_value),1.):
+   218      4688         8635      1.8      2.0          if cos_value > 0.:
+   219       880         1370      1.6      0.3              cos_value = 1.
+   220                                                   else:
+   221      3808         5982      1.6      1.4              cos_value = -1.
+   222      4688        13691      2.9      3.2      angle = math.acos(cos_value) * 180 / math.pi
+   223      4688         8412      1.8      2.0      if angle > 90:
+   224      3808        33774      8.9      8.0          areaVect *= -1
+   225      4688         8181      1.7      1.9      return areaVect
+

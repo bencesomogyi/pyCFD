@@ -1,0 +1,241 @@
+
+Processing mesh...
+MESH READ in 0.536777973175 s
+
+Writing field file 0 ...
+   DONE in 0.122153043747 s
+========================
+Timestep 1: 0.001s
+========================
+Residual for U x: 0.0930705610474
+Residual for U y: 0.0
+Residual for U z: 0.0
+predictor divergence: 0.000190894946629
+Residual for p_corr: 1121.56989284
+corrector divergence: 4.55929443839e-05
+========================
+Timestep 2: 0.002s
+========================
+Residual for U x: 1.13368617332
+Residual for U y: 0.00550282215669
+Residual for U z: 0.0
+predictor divergence: 0.000224090199252
+Residual for p_corr: 2346.62845937
+corrector divergence: 5.63882711577e-05
+========================
+Timestep 3: 0.003s
+========================
+Residual for U x: 0.37428925788
+Residual for U y: 0.0158398162721
+Residual for U z: 0.0
+predictor divergence: 0.000104817705454
+Residual for p_corr: 1377.16704795
+corrector divergence: 7.32162867045e-05
+========================
+Timestep 4: 0.004s
+========================
+Residual for U x: 0.0977206499588
+Residual for U y: 0.011655398549
+Residual for U z: 0.0
+predictor divergence: 7.74368701046e-05
+Residual for p_corr: 188.23711892
+corrector divergence: 5.41589841963e-05
+========================
+Timestep 5: 0.005s
+========================
+Residual for U x: 0.226914345525
+Residual for U y: 0.0104266632375
+Residual for U z: 0.0
+predictor divergence: 7.78648198295e-05
+Residual for p_corr: 38.9321673625
+corrector divergence: 1.93928136337e-05
+
+Writing field file 1 ...
+   DONE in 0.114494800568 s
+========================
+Timestep 6: 0.006s
+========================
+Residual for U x: 0.265000938812
+Residual for U y: 0.00919543189875
+Residual for U z: 0.0
+predictor divergence: 3.98863493437e-05
+Residual for p_corr: 3.35901974729
+corrector divergence: 2.58834413034e-05
+========================
+Timestep 7: 0.007s
+========================
+Residual for U x: 0.179234517374
+Residual for U y: 0.00820239715768
+Residual for U z: 0.0
+predictor divergence: 4.43816555348e-05
+Residual for p_corr: 2.25283358277
+corrector divergence: 2.94122493346e-05
+========================
+Timestep 8: 0.008s
+========================
+Residual for U x: 0.0883439093763
+Residual for U y: 0.00733074637223
+Residual for U z: 0.0
+predictor divergence: 3.13360548226e-05
+Residual for p_corr: 1.09002693707
+corrector divergence: 2.25046176921e-05
+========================
+Timestep 9: 0.009s
+========================
+Residual for U x: 0.0965048928021
+Residual for U y: 0.00656217439787
+Residual for U z: 0.0
+predictor divergence: 3.48563827616e-05
+Residual for p_corr: 1.78799787901
+corrector divergence: 1.08132552311e-05
+========================
+Timestep 10: 0.01s
+========================
+Residual for U x: 0.136368947007
+Residual for U y: 0.00587951396123
+Residual for U z: 0.0
+predictor divergence: 2.19212445291e-05
+Residual for p_corr: 1.45034301213
+corrector divergence: 8.92491426349e-06
+
+Writing field file 2 ...
+   DONE in 0.115453958511 s
+========================
+Timestep 11: 0.011s
+========================
+Residual for U x: 0.104506070771
+Residual for U y: 0.0052713608161
+Residual for U z: 0.0
+predictor divergence: 1.89455388222e-05
+Residual for p_corr: 1.14104472202
+corrector divergence: 1.41099229046e-05
+========================
+Timestep 12: 0.012s
+========================
+Residual for U x: 0.0406631980199
+Residual for U y: 0.00472843658429
+Residual for U z: 0.0
+predictor divergence: 1.49781742336e-05
+Residual for p_corr: 0.398989656492
+corrector divergence: 1.33582584617e-05
+========================
+Timestep 13: 0.013s
+========================
+Residual for U x: 0.0359472874928
+Residual for U y: 0.00424302082619
+Residual for U z: 0.0
+predictor divergence: 1.54007882847e-05
+Residual for p_corr: 0.762343506167
+corrector divergence: 7.72149007839e-06
+========================
+Timestep 14: 0.014s
+========================
+Residual for U x: 0.0577651748201
+Residual for U y: 0.00380846081399
+Residual for U z: 0.0
+predictor divergence: 1.0767700004e-05
+Residual for p_corr: 0.674807020263
+corrector divergence: 6.84799037277e-06
+========================
+Timestep 15: 0.015s
+========================
+Residual for U x: 0.0506709264975
+Residual for U y: 0.00348727169009
+Residual for U z: 0.0
+predictor divergence: 7.75307339895e-06
+Residual for p_corr: 0.536072516309
+corrector divergence: 6.82266354679e-06
+
+Writing field file 3 ...
+   DONE in 0.114394903183 s
+========================
+Timestep 16: 0.016s
+========================
+Residual for U x: 0.0271243311149
+Residual for U y: 0.00328287365872
+Residual for U z: 0.0
+predictor divergence: 7.04023644811e-06
+Residual for p_corr: 0.243239859803
+corrector divergence: 6.80468848384e-06
+========================
+Timestep 17: 0.017s
+========================
+Residual for U x: 0.0205435037393
+Residual for U y: 0.00308510158134
+Residual for U z: 0.0
+predictor divergence: 6.79475432693e-06
+Residual for p_corr: 0.304325741874
+corrector divergence: 6.79180247402e-06
+========================
+Timestep 18: 0.018s
+========================
+Residual for U x: 0.0310071709974
+Residual for U y: 0.00289409185713
+Residual for U z: 0.0
+predictor divergence: 6.78610662e-06
+Residual for p_corr: 0.310783009041
+corrector divergence: 6.78244605939e-06
+========================
+Timestep 19: 0.019s
+========================
+Residual for U x: 0.0296997201858
+Residual for U y: 0.00271024765631
+Residual for U z: 0.0
+predictor divergence: 6.77954089559e-06
+Residual for p_corr: 0.248448427216
+corrector divergence: 6.77554707196e-06
+========================
+Timestep 20: 0.02s
+========================
+Residual for U x: 0.0191407181963
+Residual for U y: 0.00253384816104
+Residual for U z: 0.0
+predictor divergence: 6.77444966572e-06
+Residual for p_corr: 0.136497469564
+corrector divergence: 6.770349335e-06
+
+Writing field file 4 ...
+   DONE in 0.118381977081 s
+
+Wrote profile results to test2DChannelFlow.py.lprof
+Timer unit: 1e-06 s
+
+File: pyCFD_fields/fields.py
+Function: update_boundary_values at line 76
+Total time: 90.4729 s
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    76                                               @profile            
+    77                                               def update_boundary_values(self):
+    78                                                   """
+    79                                                   update boundary values
+    80                                                   """
+    81       100          290      2.9      0.0          scalar_field = True
+    82       100          213      2.1      0.0          if self.type == "vector":
+    83        40           61      1.5      0.0              scalar_field = False
+    84                                           
+    85       100          172      1.7      0.0          mesh_ = self.father[0]
+    86    105600       153229      1.5      0.2          for face_ in mesh_.faces:
+    87    105500       188505      1.8      0.2              if face_.isBnd == False:
+    88     44500        60503      1.4      0.1                  continue
+    89  26066000     39945210      1.5     44.2              for patch_face_i,patch_face in enumerate(mesh_.patches[face_.bndId].faces):
+    90  26005000     41832502      1.6     46.2                  if patch_face.id == face_.id:
+    91     61000       113498      1.9      0.1                      patch_name = mesh_.patches[face_.bndId].name
+    92     61000       845713     13.9      0.9                      field_patch = self.get_patch(patch_name)
+    93     61000       108705      1.8      0.1                      if field_patch.type == "fixedValue":
+    94      4500        26247      5.8      0.0                          self.A[face_.id] = field_patch.values[patch_face_i]
+    95                                                               else: # "fixedGradient"
+    96     56500       916211     16.2      1.0                          vect_cell_to_face = numpy.add(face_.C,-face_.cells[0].C)
+    97     56500      2119497     37.5      2.3                          dist_cell_to_face = numpy.linalg.norm(vect_cell_to_face)
+    98     56500      1866190     33.0      2.1                          face_unit_vector = face_.Sf / numpy.linalg.norm(face_.Sf)
+    99                                                                   
+   100     56500       792485     14.0      0.9                          field_grad = self.get_patch(patch_name).values[patch_face_i]
+   101     56500       116764      2.1      0.1                          cell_id = face_.cells[0].id
+   102     56500       714538     12.6      0.8                          delta_ = numpy.dot(field_grad * face_unit_vector, vect_cell_to_face) * dist_cell_to_face
+   103     56500        99207      1.8      0.1                          if scalar_field:
+   104     36300       138252      3.8      0.2                              self.A[face_.id] = self.V[cell_id] + delta_
+   105                                                                   else:
+   106     80800       170874      2.1      0.2                              for component_ in range(3):
+   107     60600       264002      4.4      0.3                                  self.A[face_.id][component_] = self.V[cell_id][component_] + delta_
+

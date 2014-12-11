@@ -1,0 +1,365 @@
+
+Processing mesh...
+MESH READ in 3.6194319725 s
+
+=========================
+MESH DATA:
+- number of vertices: 1024
+- number of faces: 1904
+-- number of boundary faces: 1024
+-- number of internal faces: 880
+- number of cells: 464
+- number of patches: 5
+-- inlet
+-- side
+-- walls
+-- outlet
+-- frontAndRear
+=========================
+
+tetra not tested yet!
+
+testMesh FINSHED
+Wrote profile results to testMesh.py.lprof
+Timer unit: 1e-06 s
+
+File: pyCFD_fields/fields.py
+Function: update_boundary_values at line 76
+Total time: 0 s
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    76                                               @profile            
+    77                                               def update_boundary_values(self):
+    78                                                   """
+    79                                                   update boundary values
+    80                                                   """
+    81                                                   scalar_field = True
+    82                                                   if self.type == "vector":
+    83                                                       scalar_field = False
+    84                                           
+    85                                                   mesh_ = self.father[0]
+    86                                                   for face_ in mesh_.faces:
+    87                                                       if face_.isBnd == False:
+    88                                                           continue
+    89                                                       patch_face_ids = mesh_.patches[face_.bndId].ids
+    90                                                       patch_face_i = patch_face_ids.index(face_.id)
+    91                                                       patch_name = mesh_.patches[face_.bndId].name
+    92                                                       field_patch = self.get_patch(patch_name)
+    93                                                       if field_patch.type == "fixedValue":
+    94                                                           self.A[face_.id] = field_patch.values[patch_face_i]
+    95                                                       else: # "fixedGradient"
+    96                                                           vect_cell_to_face = numpy.add(face_.C,-face_.cells[0].C)
+    97                                                           dist_cell_to_face = numpy.linalg.norm(vect_cell_to_face)
+    98                                                           face_unit_vector = face_.Sf / numpy.linalg.norm(face_.Sf)
+    99                                                           
+   100                                                           field_grad = self.get_patch(patch_name).values[patch_face_i]
+   101                                                           cell_id = face_.cells[0].id
+   102                                                           delta_ = numpy.dot(field_grad * face_unit_vector, vect_cell_to_face) * dist_cell_to_face
+   103                                                           if scalar_field:
+   104                                                               self.A[face_.id] = self.V[cell_id] + delta_
+   105                                                           else:
+   106                                                               for component_ in range(3):
+   107                                                                   self.A[face_.id][component_] = self.V[cell_id][component_] + delta_
+
+File: pyCFD_mesh/readers.py
+Function: __init__ at line 253
+Total time: 2.4177 s
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+   253                                               @profile
+   254                                               def __init__(self, dir=""):
+   255         1           12     12.0      0.0          t_start = time.time()
+   256         1           18     18.0      0.0          print ''
+   257         1            5      5.0      0.0          print 'Processing mesh...'
+   258         1           11     11.0      0.0          mesh.GenericMesh.__init__(self)
+   259                                                   
+   260         1            3      3.0      0.0          self.FLAG_verbose = False
+   261                                                   """true/false to plot extra info when constructing
+   262                                                   the mesh > for debugging"""
+   263                                                   
+   264         1            4      4.0      0.0          if dir == "":
+   265                                                       path_ = "_MESH/"
+   266                                                   else:
+   267         1            4      4.0      0.0              path_ = "_MESH/"+dir+"/"
+   268                                                   
+   269                                                   # ========        
+   270                                                   # VERTICES
+   271                                                   # ========
+   272                                                   
+   273                                                   
+   274         1            3      3.0      0.0          if self.FLAG_verbose:
+   275                                                       print 'creating vertex objects...'
+   276                                                       t = time.time()
+   277                                                   
+   278                                                   # find nodes
+   279         1            3      3.0      0.0          node_file = path_+'points'
+   280         1           14     14.0      0.0          f = open(node_file, 'r')
+   281         1            4      4.0      0.0          i = 1
+   282        20           78      3.9      0.0          for line in f:
+   283        20           72      3.6      0.0              if line.strip() == '(':
+   284         1            3      3.0      0.0                  nd_sl = i+1
+   285         1            3      3.0      0.0                  break
+   286        19           61      3.2      0.0              i += 1
+   287         1            9      9.0      0.0          f.close()
+   288         1            3      3.0      0.0          try:
+   289         1            3      3.0      0.0              nd_sl
+   290                                                   except NameError:
+   291                                                       print "node definition not found, check for formatting:"
+   292                                                       print "..."
+   293                                                       print "// * * * *"
+   294                                                       print ""
+   295                                                       print "# of nodes"
+   296                                                       print "( >>> THIS SHOULD BE A SEPARATE LINE!"
+   297                                                       print "(coordX coordY coordZ)"
+   298                                                       print "..."
+   299                                                       sys.exit("exit script...")
+   300                                                   else:
+   301         1          146    146.0      0.0              ndNo   = int(linecache.getline(node_file, nd_sl-2))
+   302                                                       
+   303                                                   # create nodes
+   304         1            3      3.0      0.0          vertexList = []
+   305      1025         3450      3.4      0.1          for i_node in xrange(ndNo):
+   306      1024        20826     20.3      0.9              new_node = vertex.Vertex()
+   307                                                       # get coords as a string list
+   308      1024         9294      9.1      0.4              string = linecache.getline(node_file, nd_sl+i_node).split()
+   309      1024         3737      3.6      0.2              string_new = []
+   310      4096        14334      3.5      0.6              for str_elem in string:
+   311      3072        16193      5.3      0.7                  str_elem_list = list(str_elem)
+   312     10304        38122      3.7      1.6                  for i,char in enumerate(str_elem_list):
+   313      7232        25385      3.5      1.0                      if char == "(" or char == ")":
+   314      2048         7280      3.6      0.3                          str_elem_list[i]=""
+   315      3072        12341      4.0      0.5                  string_new.append("".join(str_elem_list))
+   316      1024         6969      6.8      0.3              new_node.setX(float(string_new[0]))
+   317      1024         6171      6.0      0.3              new_node.setY(float(string_new[1]))
+   318      1024         6002      5.9      0.2              new_node.setZ(float(string_new[2]))
+   319      1024         3889      3.8      0.2              new_node.father.append(self)
+   320      1024         6625      6.5      0.3              new_node.id = i_node
+   321      1024         3617      3.5      0.1              vertexList.append(new_node)
+   322         1            4      4.0      0.0          self.vertices = vertexList
+   323                                                   """list of vertex objects"""
+   324         1            3      3.0      0.0          if self.FLAG_verbose:
+   325                                                       print 'DONE in '+str(time.time()-t)+' s'
+   326                                                   
+   327                                                   # =====        
+   328                                                   # FACES
+   329                                                   # =====
+   330                                                   
+   331         1            3      3.0      0.0          if self.FLAG_verbose:
+   332                                                       print 'creating face objects...'
+   333                                                       t = time.time()
+   334                                                   
+   335                                                   # find faces
+   336         1            4      4.0      0.0          face_file = path_+'faces'
+   337         1           26     26.0      0.0          f = open(node_file, 'r')
+   338         1            4      4.0      0.0          i = 1
+   339        20           78      3.9      0.0          for line in f:
+   340        20           68      3.4      0.0              if line.strip() == '(':
+   341         1            4      4.0      0.0                  fc_sl = i+1
+   342         1            4      4.0      0.0                  break
+   343        19           61      3.2      0.0              i += 1
+   344         1           14     14.0      0.0          f.close()
+   345         1            4      4.0      0.0          try:
+   346         1            3      3.0      0.0              fc_sl
+   347                                                   except NameError:
+   348                                                       print "face definition not found, check for formatting:"
+   349                                                       print "..."
+   350                                                       print "// * * * *"
+   351                                                       print ""
+   352                                                       print "# of faces"
+   353                                                       print "( >>> THIS SHOULD BE A SEPARATE LINE!"
+   354                                                       print "# of vertices(vertex0 vertex2 ...)"
+   355                                                       print "..."
+   356                                                       sys.exit("exit script...")
+   357                                                   else:
+   358         1          283    283.0      0.0              fcNo   = int(linecache.getline(face_file, fc_sl-2))
+   359                                                   
+   360                                                   # create faces
+   361         1            4      4.0      0.0          face_list = []
+   362      1905         6772      3.6      0.3          for i_face in range(fcNo):
+   363                                                       # get indices as a string list
+   364      1904        20147     10.6      0.8              string = linecache.getline(face_file, fc_sl+i_face).split()
+   365      1904         7384      3.9      0.3              string_new = []
+   366      9520        34132      3.6      1.4              for str_elem in string:
+   367      7616        38662      5.1      1.6                  str_elem_list = list(str_elem)
+   368     35524       137626      3.9      5.7                  for i,char in enumerate(str_elem_list):
+   369     27908       100554      3.6      4.2                      if len(str_elem_list) == 1:
+   370        15           51      3.4      0.0                          continue
+   371     27893       101956      3.7      4.2                      if (i == 0 and str_elem_list[1] == "(")  or char == "(" or char == ")":
+   372      5712        20690      3.6      0.9                          str_elem_list[i]=""
+   373      7616        32272      4.2      1.3                  string_new.append("".join(str_elem_list))
+   374      1904         6799      3.6      0.3              vertex_list = []
+   375      9520        34793      3.7      1.4              for i_vertex in string_new:
+   376      7616        36442      4.8      1.5                  vertex_list.append(self.vertices[int(i_vertex)])
+   377      1904       551140    289.5     22.8              new_face = face.Face(vertex_list)
+   378      1904         9460      5.0      0.4              new_face.father.append(self)
+   379      1904         6996      3.7      0.3              new_face.id = i_face
+   380      1904         7163      3.8      0.3              face_list.append(new_face)
+   381      9520        37802      4.0      1.6              for vertex_ in new_face.vertices:
+   382      7616        29274      3.8      1.2                  vertex_.faces.append(new_face)
+   383         1            4      4.0      0.0          self.faces = face_list
+   384                                                   """list of face objects"""
+   385         1            4      4.0      0.0          if self.FLAG_verbose:
+   386                                                       print 'DONE in '+str(time.time()-t)+' s'
+   387                                           
+   388                                                   # =====        
+   389                                                   # CELLS
+   390                                                   # =====  
+   391                                           
+   392         1            3      3.0      0.0          if self.FLAG_verbose:
+   393                                                       print 'creating cell objects...'
+   394                                                       t = time.time()      
+   395                                                   
+   396                                                   # find cells
+   397         1            5      5.0      0.0          owners_file = path_+'owner'
+   398         1            4      4.0      0.0          neighbours_file = path_+'neighbour'
+   399         1           24     24.0      0.0          f = open(owners_file, 'r')
+   400         1            4      4.0      0.0          i = 1
+   401        21           93      4.4      0.0          for line in f:
+   402        21           80      3.8      0.0              if line.strip() == '(':
+   403         1            3      3.0      0.0                  o_sl = i+1
+   404         1            4      4.0      0.0                  break
+   405        20           73      3.6      0.0              i += 1
+   406         1           14     14.0      0.0          f.close()
+   407         1            3      3.0      0.0          try:
+   408         1            4      4.0      0.0              o_sl
+   409                                                   except NameError:
+   410                                                       print "owner definition not found, check for formatting:"
+   411                                                       print "..."
+   412                                                       print "// * * * *"
+   413                                                       print ""
+   414                                                       print "# of owners"
+   415                                                       print "( >>> THIS SHOULD BE A SEPARATE LINE!"
+   416                                                       print "face id"
+   417                                                       print "..."
+   418                                                       sys.exit("exit script...")
+   419                                                   else:
+   420         1          218    218.0      0.0              face_number   = int(linecache.getline(owners_file, o_sl-2))
+   421         1            4      4.0      0.0              if face_number != len(self.faces):
+   422                                                           sys.exit("inconsistent number of faces in _MESH/faces and _MESH/owner!")
+   423         1           12     12.0      0.0          f = open(neighbours_file, 'r')
+   424         1            3      3.0      0.0          i = 1
+   425        21           82      3.9      0.0          for line in f:
+   426        21           82      3.9      0.0              if line.strip() == '(':
+   427         1            4      4.0      0.0                  n_sl = i+1
+   428         1            3      3.0      0.0                  break
+   429        20           74      3.7      0.0              i += 1
+   430         1            9      9.0      0.0          f.close()
+   431         1            4      4.0      0.0          try:
+   432         1            4      4.0      0.0              n_sl
+   433                                                   except NameError:
+   434                                                       print "neighbour definition not found, check for formatting:"
+   435                                                       print "..."
+   436                                                       print "// * * * *"
+   437                                                       print ""
+   438                                                       print "# of neighbours"
+   439                                                       print "( >>> THIS SHOULD BE A SEPARATE LINE!"
+   440                                                       print "face id"
+   441                                                       print "..."
+   442                                                       sys.exit("exit script...")
+   443                                                   else:
+   444         1          120    120.0      0.0              internal_face_number  = int(linecache.getline(neighbours_file, n_sl-2))
+   445                                                       
+   446                                                   # create cells
+   447         1            4      4.0      0.0          owner_list = []
+   448         1            3      3.0      0.0          neighbour_list = []
+   449         1            9      9.0      0.0          internal_face_number = int(linecache.getline(neighbours_file, n_sl-2))
+   450         1            4      4.0      0.0          faces_of_cells = []
+   451      1905         7573      4.0      0.3          for i_face in range(face_number):
+   452      1904        17367      9.1      0.7              owner_list.append(int(linecache.getline(owners_file, o_sl+i_face)))
+   453       881         3275      3.7      0.1          for i_face in range(internal_face_number):
+   454       880         7340      8.3      0.3              neighbour_list.append(int(linecache.getline(neighbours_file, n_sl+i_face)))
+   455         1           51     51.0      0.0          cell_number = max(owner_list)+1
+   456       465         1768      3.8      0.1          for i_cell in range(cell_number):
+   457       464         1852      4.0      0.1              faces_of_cells.append([])
+   458      1905         8024      4.2      0.3          for i_face in range(face_number):
+   459      1904        19798     10.4      0.8              faces_of_cells[int(linecache.getline(owners_file, o_sl+i_face))].append(i_face)
+   460       881         3309      3.8      0.1          for i_face in range(internal_face_number):
+   461       880         7595      8.6      0.3              faces_of_cells[int(linecache.getline(neighbours_file, n_sl+i_face))].append(i_face)
+   462                                                   #  append faces to the cell's list
+   463       465         1762      3.8      0.1          for i_cell in range(cell_number):
+   464       464         1772      3.8      0.1              face_list = []
+   465      3248        12254      3.8      0.5              for i_face in faces_of_cells[i_cell]:
+   466      2784        10964      3.9      0.5                  face_list.append(self.faces[i_face])
+   467       464       470048   1013.0     19.4              temp_cell = cell.Cell(face_list)
+   468       464         2118      4.6      0.1              temp_cell.id = i_cell
+   469       464         2053      4.4      0.1              temp_cell.father.append(self)
+   470       464         1864      4.0      0.1              self.cells.append(temp_cell)
+   471         1           50     50.0      0.0          del i_face, i_cell, o_sl, n_sl, face_list, faces_of_cells, owners_file, neighbours_file
+   472                                                   
+   473                                                   # append cells to vertices and faces
+   474       465         1684      3.6      0.1          for cell_ in self.cells:
+   475      4176        15354      3.7      0.6              for vertex_ in cell_.vertices:
+   476      3712        14237      3.8      0.6                  vertex_.cells.append(cell_)
+   477                                                           
+   478                                                   # loop owners list
+   479      1905         6912      3.6      0.3          for i_face in range(face_number):
+   480      1904         8335      4.4      0.3              self.faces[i_face].cells.append(self.cells[owner_list[i_face]])
+   481                                                   
+   482                                                   # loop neighbours list
+   483       881         3160      3.6      0.1          for i_face in range(internal_face_number):
+   484       880         3661      4.2      0.2              self.faces[i_face].cells.append(self.cells[neighbour_list[i_face]])
+   485                                           
+   486                                                   # update Sf, weights and isBnd
+   487      1905         7403      3.9      0.3          for face_ in self.faces:
+   488      1904       182641     95.9      7.6              face_.update_Sf()
+   489      1904        48659     25.6      2.0              face_.update_weights()
+   490      1904       112006     58.8      4.6              face_.update_gradient_weights()
+   491      1904         8223      4.3      0.3              if len(face_.cells) == 1:
+   492      1024         4075      4.0      0.2                  face_.isBnd = True
+   493                                                           
+   494         1            4      4.0      0.0          if self.FLAG_verbose:
+   495                                                       print 'DONE in '+str(time.time()-t)+' s'
+   496                                                           
+   497                                                   # =======        
+   498                                                   # PATCHES
+   499                                                   # =======
+   500                                                           
+   501         1            3      3.0      0.0          if self.FLAG_verbose:
+   502                                                       print 'creating patches...'
+   503                                                       t = time.time()
+   504                                                   
+   505                                                   # find patches
+   506         1            5      5.0      0.0          patches_file = path_+'boundary'
+   507         1           27     27.0      0.0          f = open(patches_file, 'r')
+   508         1            4      4.0      0.0          i = 1
+   509         1            3      3.0      0.0          p_start = []
+   510         1            4      4.0      0.0          p_stop  = []
+   511         1            4      4.0      0.0          p_num_found = False
+   512        53          214      4.0      0.0          for line in f:
+   513        52          204      3.9      0.0              if line.strip() == '(':
+   514         1           85     85.0      0.0                  p_num = int(linecache.getline(patches_file, i-1))
+   515         1            4      4.0      0.0                  p_num_found = True
+   516        52          201      3.9      0.0              if p_num_found and line.strip() == '{':
+   517         5           22      4.4      0.0                  p_start.append(i+1)
+   518        52          202      3.9      0.0              if p_num_found and line.strip() == '}':
+   519         5           19      3.8      0.0                  p_stop.append(i)
+   520        52          194      3.7      0.0              i += 1
+   521         1            8      8.0      0.0          f.close()
+   522         1            4      4.0      0.0          if len(p_stop) is not p_num:
+   523                                                       print "p_stop: "+str(len(p_stop))
+   524                                                       sys.exit("could not find all patches, stopping")
+   525         1            4      4.0      0.0          elif len(p_start) is not p_num:
+   526                                                       print "p_start: "+str(len(p_start))
+   527                                                       sys.exit("could not find all patches, stopping")
+   528         1            6      6.0      0.0          self.patches = [None] * p_num
+   529         6           25      4.2      0.0          for i_patch in range(p_num):
+   530         5           46      9.2      0.0              patch_name = str(linecache.getline(patches_file, p_start[i_patch]-2)).strip()
+   531        20           87      4.3      0.0              for line_ in range(p_start[i_patch], p_stop[i_patch]):
+   532        15          118      7.9      0.0                  if linecache.getline(patches_file, line_).strip()[0:6] == "nFaces":
+   533         5           46      9.2      0.0                      n_faces = int(linecache.getline(patches_file, line_).strip()[6:-1])
+   534        15          117      7.8      0.0                  if linecache.getline(patches_file, line_).strip()[0:9] == "startFace":
+   535         5           44      8.8      0.0                      start_face = int(linecache.getline(patches_file, line_).strip()[9:-1])
+   536         5           18      3.6      0.0              patch_face_list = []
+   537      1029         3818      3.7      0.2              for face_ in self.faces[start_face:start_face+n_faces]:
+   538      1024         3935      3.8      0.2                  patch_face_list.append(face_)
+   539      1024         4006      3.9      0.2                  face_.bndId = i_patch
+   540         5          650    130.0      0.0              self.patches[i_patch] = patch.Patch(patch_face_list, patch_name)
+   541         5           22      4.4      0.0              self.patchNames.append(patch_name)
+   542                                                   
+   543         1            4      4.0      0.0          if self.FLAG_verbose:
+   544                                                       print 'DONE in '+str(time.time()-t)+' s'
+   545                                                       
+   546         1           21     21.0      0.0          print 'MESH READ in '+str(time.time()-t_start)+' s'
+

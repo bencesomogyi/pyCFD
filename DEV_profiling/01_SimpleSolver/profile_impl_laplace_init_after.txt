@@ -1,0 +1,305 @@
+
+Processing mesh...
+MESH READ in 0.528269052505 s
+
+Writing field file 0 ...
+   DONE in 0.110347032547 s
+========================
+Timestep 1: 0.001s
+========================
+Residual for U x: 0.0930705610474
+Residual for U y: 0.0
+Residual for U z: 0.0
+predictor divergence: 0.000190894946629
+Residual for p_corr: 1121.56989284
+corrector divergence: 4.55929443839e-05
+========================
+Timestep 2: 0.002s
+========================
+Residual for U x: 1.13368617332
+Residual for U y: 0.00550282215669
+Residual for U z: 0.0
+predictor divergence: 0.000224090199252
+Residual for p_corr: 2346.62845937
+corrector divergence: 5.63882711577e-05
+========================
+Timestep 3: 0.003s
+========================
+Residual for U x: 0.37428925788
+Residual for U y: 0.0158398162721
+Residual for U z: 0.0
+predictor divergence: 0.000104817705454
+Residual for p_corr: 1377.16704795
+corrector divergence: 7.32162867045e-05
+========================
+Timestep 4: 0.004s
+========================
+Residual for U x: 0.0977206499588
+Residual for U y: 0.011655398549
+Residual for U z: 0.0
+predictor divergence: 7.74368701046e-05
+Residual for p_corr: 188.23711892
+corrector divergence: 5.41589841963e-05
+========================
+Timestep 5: 0.005s
+========================
+Residual for U x: 0.226914345525
+Residual for U y: 0.0104266632375
+Residual for U z: 0.0
+predictor divergence: 7.78648198295e-05
+Residual for p_corr: 38.9321673625
+corrector divergence: 1.93928136337e-05
+
+Writing field file 1 ...
+   DONE in 0.119467020035 s
+========================
+Timestep 6: 0.006s
+========================
+Residual for U x: 0.265000938812
+Residual for U y: 0.00919543189875
+Residual for U z: 0.0
+predictor divergence: 3.98863493437e-05
+Residual for p_corr: 3.35901974729
+corrector divergence: 2.58834413034e-05
+========================
+Timestep 7: 0.007s
+========================
+Residual for U x: 0.179234517374
+Residual for U y: 0.00820239715768
+Residual for U z: 0.0
+predictor divergence: 4.43816555348e-05
+Residual for p_corr: 2.25283358277
+corrector divergence: 2.94122493346e-05
+========================
+Timestep 8: 0.008s
+========================
+Residual for U x: 0.0883439093763
+Residual for U y: 0.00733074637223
+Residual for U z: 0.0
+predictor divergence: 3.13360548226e-05
+Residual for p_corr: 1.09002693707
+corrector divergence: 2.25046176921e-05
+========================
+Timestep 9: 0.009s
+========================
+Residual for U x: 0.0965048928021
+Residual for U y: 0.00656217439787
+Residual for U z: 0.0
+predictor divergence: 3.48563827616e-05
+Residual for p_corr: 1.78799787901
+corrector divergence: 1.08132552311e-05
+========================
+Timestep 10: 0.01s
+========================
+Residual for U x: 0.136368947007
+Residual for U y: 0.00587951396123
+Residual for U z: 0.0
+predictor divergence: 2.19212445291e-05
+Residual for p_corr: 1.45034301213
+corrector divergence: 8.92491426349e-06
+
+Writing field file 2 ...
+   DONE in 0.110285997391 s
+========================
+Timestep 11: 0.011s
+========================
+Residual for U x: 0.104506070771
+Residual for U y: 0.0052713608161
+Residual for U z: 0.0
+predictor divergence: 1.89455388222e-05
+Residual for p_corr: 1.14104472202
+corrector divergence: 1.41099229046e-05
+========================
+Timestep 12: 0.012s
+========================
+Residual for U x: 0.0406631980199
+Residual for U y: 0.00472843658429
+Residual for U z: 0.0
+predictor divergence: 1.49781742336e-05
+Residual for p_corr: 0.398989656492
+corrector divergence: 1.33582584617e-05
+========================
+Timestep 13: 0.013s
+========================
+Residual for U x: 0.0359472874928
+Residual for U y: 0.00424302082619
+Residual for U z: 0.0
+predictor divergence: 1.54007882847e-05
+Residual for p_corr: 0.762343506167
+corrector divergence: 7.72149007839e-06
+========================
+Timestep 14: 0.014s
+========================
+Residual for U x: 0.0577651748201
+Residual for U y: 0.00380846081399
+Residual for U z: 0.0
+predictor divergence: 1.0767700004e-05
+Residual for p_corr: 0.674807020263
+corrector divergence: 6.84799037277e-06
+========================
+Timestep 15: 0.015s
+========================
+Residual for U x: 0.0506709264975
+Residual for U y: 0.00348727169009
+Residual for U z: 0.0
+predictor divergence: 7.75307339895e-06
+Residual for p_corr: 0.536072516309
+corrector divergence: 6.82266354679e-06
+
+Writing field file 3 ...
+   DONE in 0.11524605751 s
+========================
+Timestep 16: 0.016s
+========================
+Residual for U x: 0.0271243311149
+Residual for U y: 0.00328287365872
+Residual for U z: 0.0
+predictor divergence: 7.04023644811e-06
+Residual for p_corr: 0.243239859803
+corrector divergence: 6.80468848384e-06
+========================
+Timestep 17: 0.017s
+========================
+Residual for U x: 0.0205435037393
+Residual for U y: 0.00308510158134
+Residual for U z: 0.0
+predictor divergence: 6.79475432693e-06
+Residual for p_corr: 0.304325741874
+corrector divergence: 6.79180247402e-06
+========================
+Timestep 18: 0.018s
+========================
+Residual for U x: 0.0310071709974
+Residual for U y: 0.00289409185713
+Residual for U z: 0.0
+predictor divergence: 6.78610662e-06
+Residual for p_corr: 0.310783009041
+corrector divergence: 6.78244605939e-06
+========================
+Timestep 19: 0.019s
+========================
+Residual for U x: 0.0296997201858
+Residual for U y: 0.00271024765631
+Residual for U z: 0.0
+predictor divergence: 6.77954089559e-06
+Residual for p_corr: 0.248448427216
+corrector divergence: 6.77554707196e-06
+========================
+Timestep 20: 0.02s
+========================
+Residual for U x: 0.0191407181963
+Residual for U y: 0.00253384816104
+Residual for U z: 0.0
+predictor divergence: 6.77444966572e-06
+Residual for p_corr: 0.136497469564
+corrector divergence: 6.770349335e-06
+
+Writing field file 4 ...
+   DONE in 0.110892057419 s
+
+Wrote profile results to test2DChannelFlow.py.lprof
+Timer unit: 1e-06 s
+
+File: pyCFD_operators/implicit_operators.py
+Function: __init__ at line 239
+Total time: 6.39505 s
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+   239                                               @profile
+   240                                               def __init__(self, volume_field, gamma_ = 1., non_ortho_corr = ""):
+   241                                                   r"""
+   242                                                   constructor for Divergence operator
+   243                                           
+   244                                                   :param volume_field:                volume field to calculate the divergence for
+   245                                                   :type volume_field:                 pyCFD_fields.fields.VolumeField
+   246                                                   :param gamma_:                      constant conductivity
+   247                                                   :type gamma_:                       Float
+   248                                                   :param gamnon_ortho_corr:           non orthogonal correction type
+   249                                                   :type gamma_:                       String
+   250                                                   """
+   251        80          294      3.7      0.0          mesh_ = volume_field.father[0]
+   252        80         1326     16.6      0.0          pyCFD_operators.generic_operator.GenericScalarOperator.__init__(self, mesh_)
+   253                                                   
+   254        80          222      2.8      0.0          cell_number = len(mesh_.cells)
+   255        80         5232     65.4      0.1          self.A         = numpy.zeros((cell_number,cell_number))
+   256        80          444      5.5      0.0          self.b         = numpy.zeros((cell_number,1))
+   257                                                   
+   258                                           #        TODO: change to loop for faces
+   259        80          216      2.7      0.0          if non_ortho_corr != "":
+   260                                                       phi_face_grad = pyCFD_fields.calculated_fields.GaussFaceGradient(volume_field, 1)
+   261                                                       
+   262     20080        45857      2.3      0.7          for cell_i,cell_ in enumerate(mesh_.cells):
+   263    140000       357854      2.6      5.6              for face_ in cell_.faces:
+   264    120000       301753      2.5      4.7                  bnd_type = volume_field.patches[face_.bndId].type
+   265    120000       271061      2.3      4.2                  if non_ortho_corr == "":
+   266    120000       277611      2.3      4.3                      if face_.isBnd == False:
+   267     71200      2378937     33.4     37.2                          d_on = abs(numpy.linalg.norm(numpy.add(face_.cells[1].C, -face_.cells[0].C)))
+   268     71200       615586      8.6      9.6                          self.A[cell_i][cell_i] -= gamma_ / d_on * face_.A
+   269     71200       189655      2.7      3.0                          if cell_.id == face_.cells[0].id:
+   270     35600       227787      6.4      3.6                              self.A[cell_i][face_.cells[1].id] = gamma_ / d_on * face_.A
+   271                                                                   else:
+   272     35600       230234      6.5      3.6                              self.A[cell_i][face_.cells[0].id] = gamma_ / d_on * face_.A
+   273     48800       110931      2.3      1.7                      elif face_.isBnd and bnd_type == "fixedValue":
+   274      6400       208966     32.7      3.3                          d_of = abs(numpy.linalg.norm(numpy.add(face_.C, -cell_.C)))
+   275      6400        55179      8.6      0.9                          self.A[cell_i][cell_i] -= gamma_ / d_of * face_.A
+   276      6400        83249     13.0      1.3                          self.b[cell_i] -= gamma_ * volume_field.A[face_.id] / d_of * face_.A
+   277     42400        96458      2.3      1.5                      elif face_.isBnd and bnd_type == "fixedGradient":
+   278     42400       102973      2.4      1.6                          patch_face_ids = mesh_.patches[face_.bndId].ids
+   279     42400       300750      7.1      4.7                          patch_face_i = patch_face_ids.index(face_.id)
+   280     42400       532479     12.6      8.3                          self.b[cell_i] -= gamma_ * volume_field.patches[face_.bndId].values[patch_face_i] * face_.A
+   281                                           #                        for patch_face_i,patch_face in enumerate(mesh_.patches[face_.bndId].faces):
+   282                                           #                            if patch_face.id == face_.id:
+   283                                           #                                self.b[cell_i] -= gamma_ * volume_field.patches[face_.bndId].values[patch_face_i] * face_.A
+   284                                                               else:
+   285                                                                   sys.exit("error in pyCFD_operators.explicit_operators.Laplace, stopping...")
+   286                                                           else: # non_ortho_corr is defined
+   287                                                               if face_.isBnd == False:
+   288                                                                   if cell_.id == face_.cells[0].id:
+   289                                                                       vec_cn = numpy.add(face_.cells[1].C, -face_.cells[0].C)
+   290                                                                   else:
+   291                                                                       vec_cn = numpy.add(face_.cells[0].C, -face_.cells[1].C)
+   292                                                                   d_cn = numpy.linalg.norm(vec_cn)
+   293                                                                   unit_vec_cn = vec_cn / d_cn
+   294                                                                   if   non_ortho_corr == "MINIMUM": # minimum correction approach
+   295                                                                       vec_E = numpy.dot(unit_vec_cn, face_.Sf * face_.get_Sf_sign(cell_)) * unit_vec_cn
+   296                                                                   elif non_ortho_corr == "ORTHOGONAL": # orthogonal correction approach
+   297                                                                       vec_E = face_.A * unit_vec_cn
+   298                                                                   elif non_ortho_corr == "OVERRELAXED": # over-relaxed approach
+   299                                                                       vec_E = math.pow(face_.A, 2.) / numpy.dot(unit_vec_cn, face_.Sf * face_.get_Sf_sign(cell_)) * unit_vec_cn
+   300                                                                   else:
+   301                                                                       print non_ortho_corr + " non orhogonal correction is not implemented, use 'MINIMUM', 'ORTHOGONAL' or 'OVERRELAXED'"
+   302                                                                       sys.exit()
+   303                                                                   vec_T = numpy.add(face_.Sf * face_.get_Sf_sign(cell_), -vec_E)
+   304                                                                   E = numpy.linalg.norm(vec_E)
+   305                                                                   self.A[cell_i][cell_i] -= gamma_ / d_cn * E
+   306                                                                   if cell_.id == face_.cells[0].id:
+   307                                                                       self.A[cell_i][face_.cells[1].id] = gamma_ / d_cn * E
+   308                                                                   else:
+   309                                                                       self.A[cell_i][face_.cells[0].id] = gamma_ / d_cn * E
+   310                                                                   self.b[cell_i] -= gamma_ * numpy.dot(phi_face_grad.A[face_.id], vec_T)
+   311                                                               elif face_.isBnd and bnd_type == "fixedValue":
+   312                                                                   vec_of = numpy.add(face_.C, -cell_.C)
+   313                                                                   d_of = numpy.linalg.norm(vec_of)
+   314                                                                   unit_vec_of = vec_of / d_of
+   315                                                                   if   non_ortho_corr == "MINIMUM": # minimum correction approach
+   316                                                                       vec_E = numpy.dot(unit_vec_of, face_.Sf * face_.get_Sf_sign(cell_)) * unit_vec_of
+   317                                                                   elif non_ortho_corr == "ORTHOGONAL": # orthogonal correction approach
+   318                                                                       vec_E = face_.A * unit_vec_of
+   319                                                                   elif non_ortho_corr == "OVERRELAXED": # over-relaxed approach
+   320                                                                       vec_E = math.pow(face_.A, 2.) / numpy.dot(unit_vec_of, face_.Sf * face_.get_Sf_sign(cell_)) * unit_vec_of
+   321                                                                   else:
+   322                                                                       print non_ortho_corr + " non orhogonal correction is not implemented, use 'MINIMUM', 'ORTHOGONAL' or 'OVERRELAXED'"
+   323                                                                       sys.exit()
+   324                                                                   vec_T = numpy.add(face_.Sf * face_.get_Sf_sign(cell_), -vec_E)
+   325                                                                   E = numpy.linalg.norm(vec_E)
+   326                                                                   self.A[cell_i][cell_i] -= gamma_ / d_of * E
+   327                                                                   self.b[cell_i] -= gamma_ * volume_field.A[face_.id] / d_of * E
+   328                                                                   self.b[cell_i] -= gamma_ * numpy.dot(phi_face_grad.A[face_.id], vec_T)
+   329                                                               elif face_.isBnd and bnd_type == "fixedGradient":
+   330                                                                   for patch_face_i,patch_face in enumerate(mesh_.patches[face_.bndId].faces):
+   331                                                                       if patch_face.id == face_.id:
+   332                                                                           self.b[cell_i] -= gamma_ * volume_field.patches[face_.bndId].values[patch_face_i] * face_.A
+   333                                                               else:
+   334                                                                   sys.exit("error in pyCFD_operators.explicit_operators.Laplace, stopping...")
+

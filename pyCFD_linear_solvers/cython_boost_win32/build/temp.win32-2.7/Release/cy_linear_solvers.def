@@ -1,0 +1,3 @@
+LIBRARY cy_linear_solvers.pyd
+EXPORTS
+initcy_linear_solvers

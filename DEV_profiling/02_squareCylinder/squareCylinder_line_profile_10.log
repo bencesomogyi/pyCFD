@@ -1,0 +1,465 @@
+
+Processing mesh...
+MESH READ in 397.240189791 s
+
+Writing field file 0 ...
+   DONE in 22.5060451031 s
+========================
+Timestep 1: 0.1s
+========================
+Wrote profile results to squareCylinder.py.lprof
+Timer unit: 1e-06 s
+
+File: pyCFD_mesh/readers.py
+Function: __init__ at line 253
+Total time: 257.948 s
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+   253                                               @profile
+   254                                               def __init__(self, dir=""):
+   255         1            8      8.0      0.0          t_start = time.time()
+   256         1           24     24.0      0.0          print ''
+   257         1            5      5.0      0.0          print 'Processing mesh...'
+   258         1           13     13.0      0.0          mesh.GenericMesh.__init__(self)
+   259                                                   
+   260         1            4      4.0      0.0          self.FLAG_verbose = False
+   261                                                   """true/false to plot extra info when constructing
+   262                                                   the mesh > for debugging"""
+   263                                                   
+   264         1            3      3.0      0.0          if dir == "":
+   265                                                       path_ = "_MESH/"
+   266                                                   else:
+   267         1            4      4.0      0.0              path_ = "_MESH/"+dir+"/"
+   268                                                   
+   269                                                   # ========        
+   270                                                   # VERTICES
+   271                                                   # ========
+   272                                                   
+   273                                                   
+   274         1            4      4.0      0.0          if self.FLAG_verbose:
+   275                                                       print 'creating vertex objects...'
+   276                                                       t = time.time()
+   277                                                   
+   278                                                   # find nodes
+   279         1            4      4.0      0.0          node_file = path_+'points'
+   280         1           16     16.0      0.0          f = open(node_file, 'r')
+   281         1            4      4.0      0.0          i = 1
+   282        20           79      4.0      0.0          for line in f:
+   283        20           72      3.6      0.0              if line.strip() == '(':
+   284         1            4      4.0      0.0                  nd_sl = i+1
+   285         1            4      4.0      0.0                  break
+   286        19           60      3.2      0.0              i += 1
+   287         1           14     14.0      0.0          f.close()
+   288         1            3      3.0      0.0          try:
+   289         1            3      3.0      0.0              nd_sl
+   290                                                   except NameError:
+   291                                                       print "node definition not found, check for formatting:"
+   292                                                       print "..."
+   293                                                       print "// * * * *"
+   294                                                       print ""
+   295                                                       print "# of nodes"
+   296                                                       print "( >>> THIS SHOULD BE A SEPARATE LINE!"
+   297                                                       print "(coordX coordY coordZ)"
+   298                                                       print "..."
+   299                                                       sys.exit("exit script...")
+   300                                                   else:
+   301         1         8590   8590.0      0.0              ndNo   = int(linecache.getline(node_file, nd_sl-2))
+   302                                                       
+   303                                                   # create nodes
+   304         1            4      4.0      0.0          vertexList = []
+   305     93761       318372      3.4      0.1          for i_node in xrange(ndNo):
+   306     93760      2051470     21.9      0.8              new_node = vertex.Vertex()
+   307                                                       # get coords as a string list
+   308     93760       888315      9.5      0.3              string = linecache.getline(node_file, nd_sl+i_node).split()
+   309     93760       342212      3.6      0.1              string_new = []
+   310    375040      1312090      3.5      0.5              for str_elem in string:
+   311    281280      1777307      6.3      0.7                  str_elem_list = list(str_elem)
+   312   1275092      4607805      3.6      1.8                  for i,char in enumerate(str_elem_list):
+   313    993812      3507245      3.5      1.4                      if char == "(" or char == ")":
+   314    187520       671716      3.6      0.3                          str_elem_list[i]=""
+   315    281280      1161735      4.1      0.5                  string_new.append("".join(str_elem_list))
+   316     93760       684736      7.3      0.3              new_node.setX(float(string_new[0]))
+   317     93760       576884      6.2      0.2              new_node.setY(float(string_new[1]))
+   318     93760       574760      6.1      0.2              new_node.setZ(float(string_new[2]))
+   319     93760       378890      4.0      0.1              new_node.father.append(self)
+   320     93760       330534      3.5      0.1              new_node.id = i_node
+   321     93760       334381      3.6      0.1              vertexList.append(new_node)
+   322         1            4      4.0      0.0          self.vertices = vertexList
+   323                                                   """list of vertex objects"""
+   324         1            4      4.0      0.0          if self.FLAG_verbose:
+   325                                                       print 'DONE in '+str(time.time()-t)+' s'
+   326                                                   
+   327                                                   # =====        
+   328                                                   # FACES
+   329                                                   # =====
+   330                                                   
+   331         1            3      3.0      0.0          if self.FLAG_verbose:
+   332                                                       print 'creating face objects...'
+   333                                                       t = time.time()
+   334                                                   
+   335                                                   # find faces
+   336         1            5      5.0      0.0          face_file = path_+'faces'
+   337         1           29     29.0      0.0          f = open(node_file, 'r')
+   338         1            4      4.0      0.0          i = 1
+   339        20           88      4.4      0.0          for line in f:
+   340        20           74      3.7      0.0              if line.strip() == '(':
+   341         1            4      4.0      0.0                  fc_sl = i+1
+   342         1            4      4.0      0.0                  break
+   343        19           67      3.5      0.0              i += 1
+   344         1           19     19.0      0.0          f.close()
+   345         1            3      3.0      0.0          try:
+   346         1            3      3.0      0.0              fc_sl
+   347                                                   except NameError:
+   348                                                       print "face definition not found, check for formatting:"
+   349                                                       print "..."
+   350                                                       print "// * * * *"
+   351                                                       print ""
+   352                                                       print "# of faces"
+   353                                                       print "( >>> THIS SHOULD BE A SEPARATE LINE!"
+   354                                                       print "# of vertices(vertex0 vertex2 ...)"
+   355                                                       print "..."
+   356                                                       sys.exit("exit script...")
+   357                                                   else:
+   358         1        21623  21623.0      0.0              fcNo   = int(linecache.getline(face_file, fc_sl-2))
+   359                                                   
+   360                                                   # create faces
+   361         1            5      5.0      0.0          face_list = []
+   362    186081       650512      3.5      0.3          for i_face in range(fcNo):
+   363                                                       # get indices as a string list
+   364    186080      2029009     10.9      0.8              string = linecache.getline(face_file, fc_sl+i_face).split()
+   365    186080       708908      3.8      0.3              string_new = []
+   366    930400      3330762      3.6      1.3              for str_elem in string:
+   367    744320      4735504      6.4      1.8                  str_elem_list = list(str_elem)
+   368   4937294     17976796      3.6      7.0                  for i,char in enumerate(str_elem_list):
+   369   4192974     14844947      3.5      5.8                      if len(str_elem_list) == 1:
+   370         9           30      3.3      0.0                          continue
+   371   4192965     15164020      3.6      5.9                      if (i == 0 and str_elem_list[1] == "(")  or char == "(" or char == ")":
+   372    558240      2015876      3.6      0.8                          str_elem_list[i]=""
+   373    744320      3189534      4.3      1.2                  string_new.append("".join(str_elem_list))
+   374    186080       656932      3.5      0.3              vertex_list = []
+   375    930400      3368117      3.6      1.3              for i_vertex in string_new:
+   376    744320      3641092      4.9      1.4                  vertex_list.append(self.vertices[int(i_vertex)])
+   377    186080     55635452    299.0     21.6              new_face = face.Face(vertex_list)
+   378    186080       925840      5.0      0.4              new_face.father.append(self)
+   379    186080       670273      3.6      0.3              new_face.id = i_face
+   380    186080       680721      3.7      0.3              face_list.append(new_face)
+   381    930400      4524412      4.9      1.8              for vertex_ in new_face.vertices:
+   382    744320      2839679      3.8      1.1                  vertex_.faces.append(new_face)
+   383         1            9      9.0      0.0          self.faces = face_list
+   384                                                   """list of face objects"""
+   385         1            3      3.0      0.0          if self.FLAG_verbose:
+   386                                                       print 'DONE in '+str(time.time()-t)+' s'
+   387                                           
+   388                                                   # =====        
+   389                                                   # CELLS
+   390                                                   # =====  
+   391                                           
+   392         1            4      4.0      0.0          if self.FLAG_verbose:
+   393                                                       print 'creating cell objects...'
+   394                                                       t = time.time()      
+   395                                                   
+   396                                                   # find cells
+   397         1            6      6.0      0.0          owners_file = path_+'owner'
+   398         1            3      3.0      0.0          neighbours_file = path_+'neighbour'
+   399         1           36     36.0      0.0          f = open(owners_file, 'r')
+   400         1            3      3.0      0.0          i = 1
+   401        21          104      5.0      0.0          for line in f:
+   402        21           84      4.0      0.0              if line.strip() == '(':
+   403         1            3      3.0      0.0                  o_sl = i+1
+   404         1            4      4.0      0.0                  break
+   405        20           71      3.5      0.0              i += 1
+   406         1           15     15.0      0.0          f.close()
+   407         1            5      5.0      0.0          try:
+   408         1            3      3.0      0.0              o_sl
+   409                                                   except NameError:
+   410                                                       print "owner definition not found, check for formatting:"
+   411                                                       print "..."
+   412                                                       print "// * * * *"
+   413                                                       print ""
+   414                                                       print "# of owners"
+   415                                                       print "( >>> THIS SHOULD BE A SEPARATE LINE!"
+   416                                                       print "face id"
+   417                                                       print "..."
+   418                                                       sys.exit("exit script...")
+   419                                                   else:
+   420         1        15990  15990.0      0.0              face_number   = int(linecache.getline(owners_file, o_sl-2))
+   421         1            6      6.0      0.0              if face_number != len(self.faces):
+   422                                                           sys.exit("inconsistent number of faces in _MESH/faces and _MESH/owner!")
+   423         1           26     26.0      0.0          f = open(neighbours_file, 'r')
+   424         1            3      3.0      0.0          i = 1
+   425        21           85      4.0      0.0          for line in f:
+   426        21           81      3.9      0.0              if line.strip() == '(':
+   427         1            3      3.0      0.0                  n_sl = i+1
+   428         1            4      4.0      0.0                  break
+   429        20           72      3.6      0.0              i += 1
+   430         1            9      9.0      0.0          f.close()
+   431         1            4      4.0      0.0          try:
+   432         1            4      4.0      0.0              n_sl
+   433                                                   except NameError:
+   434                                                       print "neighbour definition not found, check for formatting:"
+   435                                                       print "..."
+   436                                                       print "// * * * *"
+   437                                                       print ""
+   438                                                       print "# of neighbours"
+   439                                                       print "( >>> THIS SHOULD BE A SEPARATE LINE!"
+   440                                                       print "face id"
+   441                                                       print "..."
+   442                                                       sys.exit("exit script...")
+   443                                                   else:
+   444         1         7039   7039.0      0.0              internal_face_number  = int(linecache.getline(neighbours_file, n_sl-2))
+   445                                                       
+   446                                                   # create cells
+   447         1            7      7.0      0.0          owner_list = []
+   448         1            4      4.0      0.0          neighbour_list = []
+   449         1           14     14.0      0.0          internal_face_number = int(linecache.getline(neighbours_file, n_sl-2))
+   450         1            4      4.0      0.0          faces_of_cells = []
+   451    186081       717843      3.9      0.3          for i_face in range(face_number):
+   452    186080      1556772      8.4      0.6              owner_list.append(int(linecache.getline(owners_file, o_sl+i_face)))
+   453     92321       345292      3.7      0.1          for i_face in range(internal_face_number):
+   454     92320       775879      8.4      0.3              neighbour_list.append(int(linecache.getline(neighbours_file, n_sl+i_face)))
+   455         1         4729   4729.0      0.0          cell_number = max(owner_list)+1
+   456     46401       164640      3.5      0.1          for i_cell in range(cell_number):
+   457     46400       199451      4.3      0.1              faces_of_cells.append([])
+   458    186081       698264      3.8      0.3          for i_face in range(face_number):
+   459    186080      1590138      8.5      0.6              faces_of_cells[int(linecache.getline(owners_file, o_sl+i_face))].append(i_face)
+   460     92321       348426      3.8      0.1          for i_face in range(internal_face_number):
+   461     92320       794527      8.6      0.3              faces_of_cells[int(linecache.getline(neighbours_file, n_sl+i_face))].append(i_face)
+   462                                                   #  append faces to the cell's list
+   463     46401       181642      3.9      0.1          for i_cell in range(cell_number):
+   464     46400       181211      3.9      0.1              face_list = []
+   465    324800      1354422      4.2      0.5              for i_face in faces_of_cells[i_cell]:
+   466    278400      1140254      4.1      0.4                  face_list.append(self.faces[i_face])
+   467     46400     49728753   1071.7     19.3              temp_cell = cell.Cell(face_list)
+   468     46400       219079      4.7      0.1              temp_cell.id = i_cell
+   469     46400       208105      4.5      0.1              temp_cell.father.append(self)
+   470     46400       185711      4.0      0.1              self.cells.append(temp_cell)
+   471         1         5922   5922.0      0.0          del i_face, i_cell, o_sl, n_sl, face_list, faces_of_cells, owners_file, neighbours_file
+   472                                                   
+   473                                                   # append cells to vertices and faces
+   474     46401       166031      3.6      0.1          for cell_ in self.cells:
+   475    417600      1540465      3.7      0.6              for vertex_ in cell_.vertices:
+   476    371200      1457738      3.9      0.6                  vertex_.cells.append(cell_)
+   477                                                           
+   478                                                   # loop owners list
+   479    186081       685169      3.7      0.3          for i_face in range(face_number):
+   480    186080       833097      4.5      0.3              self.faces[i_face].cells.append(self.cells[owner_list[i_face]])
+   481                                                   
+   482                                                   # loop neighbours list
+   483     92321       337946      3.7      0.1          for i_face in range(internal_face_number):
+   484     92320       403056      4.4      0.2              self.faces[i_face].cells.append(self.cells[neighbour_list[i_face]])
+   485                                           
+   486                                                   # update Sf, weights and isBnd
+   487    186081       713305      3.8      0.3          for face_ in self.faces:
+   488    186080     18730966    100.7      7.3              face_.update_Sf()
+   489    186080      5159139     27.7      2.0              face_.update_weights()
+   490    186080      7599291     40.8      2.9              face_.update_gradient_weights()
+   491    186080       804476      4.3      0.3              if len(face_.cells) == 1:
+   492     93760       377695      4.0      0.1                  face_.isBnd = True
+   493                                                           
+   494         1            4      4.0      0.0          if self.FLAG_verbose:
+   495                                                       print 'DONE in '+str(time.time()-t)+' s'
+   496                                                           
+   497                                                   # =======        
+   498                                                   # PATCHES
+   499                                                   # =======
+   500                                                           
+   501         1            3      3.0      0.0          if self.FLAG_verbose:
+   502                                                       print 'creating patches...'
+   503                                                       t = time.time()
+   504                                                   
+   505                                                   # find patches
+   506         1            5      5.0      0.0          patches_file = path_+'boundary'
+   507         1           29     29.0      0.0          f = open(patches_file, 'r')
+   508         1            4      4.0      0.0          i = 1
+   509         1            4      4.0      0.0          p_start = []
+   510         1            4      4.0      0.0          p_stop  = []
+   511         1            3      3.0      0.0          p_num_found = False
+   512        53          216      4.1      0.0          for line in f:
+   513        52          204      3.9      0.0              if line.strip() == '(':
+   514         1           86     86.0      0.0                  p_num = int(linecache.getline(patches_file, i-1))
+   515         1            4      4.0      0.0                  p_num_found = True
+   516        52          196      3.8      0.0              if p_num_found and line.strip() == '{':
+   517         5           21      4.2      0.0                  p_start.append(i+1)
+   518        52          194      3.7      0.0              if p_num_found and line.strip() == '}':
+   519         5           18      3.6      0.0                  p_stop.append(i)
+   520        52          190      3.7      0.0              i += 1
+   521         1            9      9.0      0.0          f.close()
+   522         1            4      4.0      0.0          if len(p_stop) is not p_num:
+   523                                                       print "p_stop: "+str(len(p_stop))
+   524                                                       sys.exit("could not find all patches, stopping")
+   525         1            3      3.0      0.0          elif len(p_start) is not p_num:
+   526                                                       print "p_start: "+str(len(p_start))
+   527                                                       sys.exit("could not find all patches, stopping")
+   528         1            6      6.0      0.0          self.patches = [None] * p_num
+   529         6           26      4.3      0.0          for i_patch in range(p_num):
+   530         5           55     11.0      0.0              patch_name = str(linecache.getline(patches_file, p_start[i_patch]-2)).strip()
+   531        20           87      4.3      0.0              for line_ in range(p_start[i_patch], p_stop[i_patch]):
+   532        15          122      8.1      0.0                  if linecache.getline(patches_file, line_).strip()[0:6] == "nFaces":
+   533         5           63     12.6      0.0                      n_faces = int(linecache.getline(patches_file, line_).strip()[6:-1])
+   534        15          121      8.1      0.0                  if linecache.getline(patches_file, line_).strip()[0:9] == "startFace":
+   535         5           45      9.0      0.0                      start_face = int(linecache.getline(patches_file, line_).strip()[9:-1])
+   536         5           19      3.8      0.0              patch_face_list = []
+   537     93765       373941      4.0      0.1              for i_face,face_ in enumerate(self.faces[start_face:start_face+n_faces]):
+   538     93760       380538      4.1      0.1                  patch_face_list.append(face_)
+   539     93760       378790      4.0      0.1                  face_.bndId = i_patch
+   540     93760       378934      4.0      0.1                  face_.inPatchId = i_face
+   541         5        63285  12657.0      0.0              self.patches[i_patch] = patch.Patch(patch_face_list, patch_name)
+   542         5           29      5.8      0.0              self.patchNames.append(patch_name)
+   543                                                   
+   544         1            4      4.0      0.0          if self.FLAG_verbose:
+   545                                                       print 'DONE in '+str(time.time()-t)+' s'
+   546                                                       
+   547         1           27     27.0      0.0          print 'MESH READ in '+str(time.time()-t_start)+' s'
+
+File: pyCFD_operators/implicit_operators.py
+Function: __init__ at line 251
+Total time: 0 s
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+   251                                               @profile
+   252                                               def __init__(self, volume_field, gamma_ = 1., non_ortho_corr = ""):
+   253                                                   r"""
+   254                                                   constructor for Divergence operator
+   255                                           
+   256                                                   :param volume_field:                volume field to calculate the divergence for
+   257                                                   :type volume_field:                 pyCFD_fields.fields.VolumeField
+   258                                                   :param gamma_:                      constant conductivity
+   259                                                   :type gamma_:                       Float
+   260                                                   :param gamnon_ortho_corr:           non orthogonal correction type
+   261                                                   :type gamma_:                       String
+   262                                                   """
+   263                                                   mesh_ = volume_field.father[0]
+   264                                                   pyCFD_operators.generic_operator.GenericScalarOperator.__init__(self, mesh_)
+   265                                                   
+   266                                                   cell_number = len(mesh_.cells)
+   267                                           #        self.A         = numpy.zeros((cell_number,cell_number))
+   268                                                   self.A         = scipy.sparse.dok_matrix((cell_number, cell_number))
+   269                                                   self.b         = numpy.zeros((cell_number,1))
+   270                                                   
+   271                                           #        TODO: change to loop for faces
+   272                                                   if non_ortho_corr != "":
+   273                                                       phi_face_grad = pyCFD_fields.calculated_fields.GaussFaceGradient(volume_field, 1)
+   274                                                       
+   275                                                   for cell_i,cell_ in enumerate(mesh_.cells):
+   276                                                       for face_ in cell_.faces:
+   277                                                           bnd_type = volume_field.patches[face_.bndId].type
+   278                                                           if non_ortho_corr == "":
+   279                                                               if face_.isBnd == False:
+   280                                           #                        d_on = abs(numpy.linalg.norm(numpy.add(face_.cells[1].C, -face_.cells[0].C)))
+   281                                                                   d_on = abs(cy_operators.cy_linalg_norm(numpy.add(face_.cells[1].C, -face_.cells[0].C)))
+   282                                                                   self.A[cell_i, cell_i] -= gamma_ / d_on * face_.A
+   283                                                                   if cell_.id == face_.cells[0].id:
+   284                                                                       self.A[cell_i, face_.cells[1].id] = gamma_ / d_on * face_.A
+   285                                                                   else:
+   286                                                                       self.A[cell_i, face_.cells[0].id] = gamma_ / d_on * face_.A
+   287                                                               elif face_.isBnd and bnd_type == "fixedValue":
+   288                                           #                        d_of = abs(numpy.linalg.norm(numpy.add(face_.C, -cell_.C)))
+   289                                                                   d_of = abs(cy_operators.cy_linalg_norm(numpy.add(face_.C, -cell_.C)))
+   290                                                                   self.A[cell_i, cell_i] -= gamma_ / d_of * face_.A
+   291                                                                   self.b[cell_i] -= gamma_ * volume_field.A[face_.id] / d_of * face_.A
+   292                                                               elif face_.isBnd and bnd_type == "fixedGradient":
+   293                                                                   patch_face_ids = mesh_.patches[face_.bndId].ids
+   294                                                                   patch_face_i = patch_face_ids.index(face_.id)
+   295                                                                   self.b[cell_i] -= gamma_ * volume_field.patches[face_.bndId].values[patch_face_i] * face_.A
+   296                                           #                        for patch_face_i,patch_face in enumerate(mesh_.patches[face_.bndId].faces):
+   297                                           #                            if patch_face.id == face_.id:
+   298                                           #                                self.b[cell_i] -= gamma_ * volume_field.patches[face_.bndId].values[patch_face_i] * face_.A
+   299                                                               else:
+   300                                                                   sys.exit("error in pyCFD_operators.explicit_operators.Laplace, stopping...")
+   301                                                           else: # non_ortho_corr is defined
+   302                                                               if face_.isBnd == False:
+   303                                                                   if cell_.id == face_.cells[0].id:
+   304                                                                       vec_cn = numpy.add(face_.cells[1].C, -face_.cells[0].C)
+   305                                                                   else:
+   306                                                                       vec_cn = numpy.add(face_.cells[0].C, -face_.cells[1].C)
+   307                                           #                        d_cn = numpy.linalg.norm(vec_cn)
+   308                                                                   d_cn = cy_operators.cy_linalg_norm(vec_cn)
+   309                                                                   unit_vec_cn = vec_cn / d_cn
+   310                                                                   if   non_ortho_corr == "MINIMUM": # minimum correction approach
+   311                                                                       vec_E = numpy.dot(unit_vec_cn, face_.Sf * face_.get_Sf_sign(cell_)) * unit_vec_cn
+   312                                                                   elif non_ortho_corr == "ORTHOGONAL": # orthogonal correction approach
+   313                                                                       vec_E = face_.A * unit_vec_cn
+   314                                                                   elif non_ortho_corr == "OVERRELAXED": # over-relaxed approach
+   315                                                                       vec_E = math.pow(face_.A, 2.) / numpy.dot(unit_vec_cn, face_.Sf * face_.get_Sf_sign(cell_)) * unit_vec_cn
+   316                                                                   else:
+   317                                                                       print non_ortho_corr + " non orhogonal correction is not implemented, use 'MINIMUM', 'ORTHOGONAL' or 'OVERRELAXED'"
+   318                                                                       sys.exit()
+   319                                                                   vec_T = numpy.add(face_.Sf * face_.get_Sf_sign(cell_), -vec_E)
+   320                                           #                        E = numpy.linalg.norm(vec_E)
+   321                                                                   E = cy_operators.cy_linalg_norm(vec_E)
+   322                                                                   self.A[cell_i, cell_i] -= gamma_ / d_cn * E
+   323                                                                   if cell_.id == face_.cells[0].id:
+   324                                                                       self.A[cell_i, face_.cells[1].id] = gamma_ / d_cn * E
+   325                                                                   else:
+   326                                                                       self.A[cell_i, face_.cells[0].id] = gamma_ / d_cn * E
+   327                                                                   self.b[cell_i] -= gamma_ * numpy.dot(phi_face_grad.A[face_.id], vec_T)
+   328                                                               elif face_.isBnd and bnd_type == "fixedValue":
+   329                                                                   vec_of = numpy.add(face_.C, -cell_.C)
+   330                                           #                        d_of = numpy.linalg.norm(vec_of)
+   331                                                                   d_of = cy_operators.cy_linalg_norm(vec_of)
+   332                                                                   unit_vec_of = vec_of / d_of
+   333                                                                   if   non_ortho_corr == "MINIMUM": # minimum correction approach
+   334                                                                       vec_E = numpy.dot(unit_vec_of, face_.Sf * face_.get_Sf_sign(cell_)) * unit_vec_of
+   335                                                                   elif non_ortho_corr == "ORTHOGONAL": # orthogonal correction approach
+   336                                                                       vec_E = face_.A * unit_vec_of
+   337                                                                   elif non_ortho_corr == "OVERRELAXED": # over-relaxed approach
+   338                                                                       vec_E = math.pow(face_.A, 2.) / numpy.dot(unit_vec_of, face_.Sf * face_.get_Sf_sign(cell_)) * unit_vec_of
+   339                                                                   else:
+   340                                                                       print non_ortho_corr + " non orhogonal correction is not implemented, use 'MINIMUM', 'ORTHOGONAL' or 'OVERRELAXED'"
+   341                                                                       sys.exit()
+   342                                                                   vec_T = numpy.add(face_.Sf * face_.get_Sf_sign(cell_), -vec_E)
+   343                                           #                        E = numpy.linalg.norm(vec_E)
+   344                                                                   E = cy_operators.cy_linalg_norm(vec_E)
+   345                                                                   self.A[cell_i, cell_i] -= gamma_ / d_of * E
+   346                                                                   self.b[cell_i] -= gamma_ * volume_field.A[face_.id] / d_of * E
+   347                                                                   self.b[cell_i] -= gamma_ * numpy.dot(phi_face_grad.A[face_.id], vec_T)
+   348                                                               elif face_.isBnd and bnd_type == "fixedGradient":
+   349                                                                   for patch_face_i,patch_face in enumerate(mesh_.patches[face_.bndId].faces):
+   350                                                                       if patch_face.id == face_.id:
+   351                                                                           self.b[cell_i] -= gamma_ * volume_field.patches[face_.bndId].values[patch_face_i] * face_.A
+   352                                                               else:
+   353                                                                   sys.exit("error in pyCFD_operators.explicit_operators.Laplace, stopping...")
+
+File: pyCFD_operators/implicit_operators.py
+Function: __init__ at line 367
+Total time: 0 s
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+   367                                               @profile
+   368                                               def __init__(self, volume_field, gamma_ = 1., non_ortho_corr = ""):
+   369                                                   r"""
+   370                                                   constructor for Divergence operator
+   371                                           
+   372                                                   :param volume_field:                volume field to calculate the divergence for
+   373                                                   :type volume_field:                 pyCFD_fields.fields.VolumeField
+   374                                                   :param gamma_:                      constant conductivity
+   375                                                   :type gamma_:                       Float
+   376                                                   :param gamnon_ortho_corr:           non orthogonal correction type
+   377                                                   :type gamma_:                       String
+   378                                                   """
+   379                                                   mesh_ = volume_field.father[0]
+   380                                                   pyCFD_operators.generic_operator.GenericVectorOperator.__init__(self, mesh_)
+   381                                                   
+   382                                                   # x component
+   383                                                   volume_field_x = volume_field.get_component_as_scalar_field(0)
+   384                                                   laplace_x = Laplace(volume_field_x, gamma_, non_ortho_corr)
+   385                                                   self.A  = laplace_x.A
+   386                                                   self.bX = laplace_x.b
+   387                                           #        self.xX_old = laplace_x.x_old
+   388                                           #        self.xX_old_old = laplace_x.x_old_old
+   389                                                   
+   390                                                   # y component
+   391                                                   volume_field_y = volume_field.get_component_as_scalar_field(1)
+   392                                                   laplace_y = Laplace(volume_field_y, gamma_, non_ortho_corr)
+   393                                                   self.bY = laplace_y.b
+   394                                           #        self.xY_old = laplace_y.x_old
+   395                                           #        self.xY_old_old = laplace_y.x_old_old
+   396                                                   
+   397                                                   # z component
+   398                                                   volume_field_z = volume_field.get_component_as_scalar_field(2)
+   399                                                   laplace_z = Laplace(volume_field_z, gamma_, non_ortho_corr)
+   400                                                   self.bZ = laplace_z.b
+

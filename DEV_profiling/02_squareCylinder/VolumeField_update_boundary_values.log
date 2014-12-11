@@ -1,0 +1,45 @@
+finished square cylinder example in 279.56692791 s
+Wrote profile results to squareCylinder.py.lprof
+Timer unit: 1e-06 s
+
+File: pyCFD_fields/fields.py
+Function: update_boundary_values at line 84
+Total time: 76.1338 s
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    84                                               @profile
+    85                                               def update_boundary_values(self):
+    86                                                   """
+    87                                                   update boundary values
+    88                                                   """
+    89        20           81      4.0      0.0          scalar_field = True
+    90        20           57      2.9      0.0          if self.type == "vector":
+    91         8           18      2.2      0.0              scalar_field = False
+    92                                           
+    93        20           44      2.2      0.0          mesh_ = self.father[0]
+    94    597780      1015188      1.7      1.3          for face_ in mesh_.faces:
+    95    597760      1149118      1.9      1.5              if face_.isBnd == False:
+    96    293120       450200      1.5      0.6                  continue
+    97    304640       592157      1.9      0.8              patch_face_ids = mesh_.patches[face_.bndId].ids
+    98    304640     43794234    143.8     57.5              patch_face_i = patch_face_ids.index(face_.id)
+    99    304640       666761      2.2      0.9              patch_name = mesh_.patches[face_.bndId].name
+   100    304640      4536295     14.9      6.0              field_patch = self.get_patch(patch_name)
+   101    304640       575054      1.9      0.8              if field_patch.type == "fixedValue":
+   102      1328         4352      3.3      0.0                  self.A[face_.id] = field_patch.values[patch_face_i]
+   103                                                       else: # "fixedGradient"
+   104    303312      4241703     14.0      5.6                  vect_cell_to_face = numpy.add(face_.C,-face_.cells[0].C)
+   105                                           #                dist_cell_to_face = numpy.linalg.norm(vect_cell_to_face)
+   106    303312      1480635      4.9      1.9                  dist_cell_to_face = cy_operators.cy_linalg_norm(vect_cell_to_face)
+   107                                           #                face_unit_vector = face_.Sf / numpy.linalg.norm(face_.Sf)
+   108    303312      3636327     12.0      4.8                  face_unit_vector = face_.Sf / cy_operators.cy_linalg_norm(face_.Sf)
+   109                                                           
+   110    303312      4657014     15.4      6.1                  field_grad = self.get_patch(patch_name).values[patch_face_i]
+   111    303312       655146      2.2      0.9                  cell_id = face_.cells[0].id
+   112    303312      4685395     15.4      6.2                  delta_ = numpy.dot(field_grad * face_unit_vector, vect_cell_to_face) * dist_cell_to_face
+   113    303312       564575      1.9      0.7                  if scalar_field:
+   114    182064       698453      3.8      0.9                      self.A[face_.id] = self.V[cell_id] + delta_
+   115                                                           else:
+   116    484992       996373      2.1      1.3                      for component_ in range(3):
+   117    363744      1734593      4.8      2.3                          self.A[face_.id][component_] = self.V[cell_id][component_] + delta_
+

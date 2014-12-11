@@ -1,0 +1,133 @@
+
+Processing mesh...
+MESH READ in 98.5499889851 s
+
+Writing field file 0 ...
+   DONE in 21.8443911076 s
+========================
+Timestep 1: 0.1s
+========================
+Residual for U x: 0.95841823091
+Residual for U y: 0.0
+Residual for U z: 0.0
+predictor divergence: 0.0128695296796
+Residual for p_corr: 8.4572583316
+corrector divergence: 0.00637160016279
+
+Writing field file 1 ...
+   DONE in 21.9980750084 s
+
+finished square cylinder example in 767.767221928 s
+Wrote profile results to squareCylinder.py.lprof
+Timer unit: 1e-06 s
+
+File: pyCFD_operators/implicit_operators.py
+Function: __init__ at line 251
+Total time: 417.868 s
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+   251                                               @profile
+   252                                               def __init__(self, volume_field, gamma_ = 1., non_ortho_corr = ""):
+   253                                                   r"""
+   254                                                   constructor for Divergence operator
+   255                                           
+   256                                                   :param volume_field:                volume field to calculate the divergence for
+   257                                                   :type volume_field:                 pyCFD_fields.fields.VolumeField
+   258                                                   :param gamma_:                      constant conductivity
+   259                                                   :type gamma_:                       Float
+   260                                                   :param gamnon_ortho_corr:           non orthogonal correction type
+   261                                                   :type gamma_:                       String
+   262                                                   """
+   263         4           23      5.8      0.0          mesh_ = volume_field.father[0]
+   264         4          790    197.5      0.0          pyCFD_operators.generic_operator.GenericScalarOperator.__init__(self, mesh_)
+   265                                                   
+   266         4           18      4.5      0.0          cell_number = len(mesh_.cells)
+   267                                           #        self.A         = numpy.zeros((cell_number,cell_number))
+   268         4          340     85.0      0.0          self.A         = scipy.sparse.dok_matrix((cell_number, cell_number))
+   269         4          203     50.8      0.0          self.b         = numpy.zeros((cell_number,1))
+   270                                                   
+   271                                           #        TODO: change to loop for faces
+   272         4           13      3.2      0.0          if non_ortho_corr != "":
+   273                                                       phi_face_grad = pyCFD_fields.calculated_fields.GaussFaceGradient(volume_field, 1)
+   274                                                       
+   275    185604       471142      2.5      0.1          for cell_i,cell_ in enumerate(mesh_.cells):
+   276   1299200      3624890      2.8      0.9              for face_ in cell_.faces:
+   277   1113600      2990548      2.7      0.7                  bnd_type = volume_field.patches[face_.bndId].type
+   278   1113600      2548597      2.3      0.6                  if non_ortho_corr == "":
+   279   1113600      2645991      2.4      0.6                      if face_.isBnd == False:
+   280                                           #                        d_on = abs(numpy.linalg.norm(numpy.add(face_.cells[1].C, -face_.cells[0].C)))
+   281    738560     10611398     14.4      2.5                          d_on = abs(cy_operators.cy_linalg_norm(numpy.add(face_.cells[1].C, -face_.cells[0].C)))
+   282    738560     46894758     63.5     11.2                          self.A[cell_i, cell_i] -= gamma_ / d_on * face_.A
+   283    738560      2166802      2.9      0.5                          if cell_.id == face_.cells[0].id:
+   284    369280     10974905     29.7      2.6                              self.A[cell_i, face_.cells[1].id] = gamma_ / d_on * face_.A
+   285                                                                   else:
+   286    369280     10934138     29.6      2.6                              self.A[cell_i, face_.cells[0].id] = gamma_ / d_on * face_.A
+   287    375040       863586      2.3      0.2                      elif face_.isBnd and bnd_type == "fixedValue":
+   288                                           #                        d_of = abs(numpy.linalg.norm(numpy.add(face_.C, -cell_.C)))
+   289       720         9130     12.7      0.0                          d_of = abs(cy_operators.cy_linalg_norm(numpy.add(face_.C, -cell_.C)))
+   290       720        42973     59.7      0.0                          self.A[cell_i, cell_i] -= gamma_ / d_of * face_.A
+   291       720        12073     16.8      0.0                          self.b[cell_i] -= gamma_ * volume_field.A[face_.id] / d_of * face_.A
+   292    374320       849115      2.3      0.2                      elif face_.isBnd and bnd_type == "fixedGradient":
+   293    374320       978586      2.6      0.2                          patch_face_ids = mesh_.patches[face_.bndId].ids
+   294    374320    313345098    837.1     75.0                          patch_face_i = patch_face_ids.index(face_.id)
+   295    374320      7902681     21.1      1.9                          self.b[cell_i] -= gamma_ * volume_field.patches[face_.bndId].values[patch_face_i] * face_.A
+   296                                           #                        for patch_face_i,patch_face in enumerate(mesh_.patches[face_.bndId].faces):
+   297                                           #                            if patch_face.id == face_.id:
+   298                                           #                                self.b[cell_i] -= gamma_ * volume_field.patches[face_.bndId].values[patch_face_i] * face_.A
+   299                                                               else:
+   300                                                                   sys.exit("error in pyCFD_operators.explicit_operators.Laplace, stopping...")
+   301                                                           else: # non_ortho_corr is defined
+   302                                                               if face_.isBnd == False:
+   303                                                                   if cell_.id == face_.cells[0].id:
+   304                                                                       vec_cn = numpy.add(face_.cells[1].C, -face_.cells[0].C)
+   305                                                                   else:
+   306                                                                       vec_cn = numpy.add(face_.cells[0].C, -face_.cells[1].C)
+   307                                           #                        d_cn = numpy.linalg.norm(vec_cn)
+   308                                                                   d_cn = cy_operators.cy_linalg_norm(vec_cn)
+   309                                                                   unit_vec_cn = vec_cn / d_cn
+   310                                                                   if   non_ortho_corr == "MINIMUM": # minimum correction approach
+   311                                                                       vec_E = numpy.dot(unit_vec_cn, face_.Sf * face_.get_Sf_sign(cell_)) * unit_vec_cn
+   312                                                                   elif non_ortho_corr == "ORTHOGONAL": # orthogonal correction approach
+   313                                                                       vec_E = face_.A * unit_vec_cn
+   314                                                                   elif non_ortho_corr == "OVERRELAXED": # over-relaxed approach
+   315                                                                       vec_E = math.pow(face_.A, 2.) / numpy.dot(unit_vec_cn, face_.Sf * face_.get_Sf_sign(cell_)) * unit_vec_cn
+   316                                                                   else:
+   317                                                                       print non_ortho_corr + " non orhogonal correction is not implemented, use 'MINIMUM', 'ORTHOGONAL' or 'OVERRELAXED'"
+   318                                                                       sys.exit()
+   319                                                                   vec_T = numpy.add(face_.Sf * face_.get_Sf_sign(cell_), -vec_E)
+   320                                           #                        E = numpy.linalg.norm(vec_E)
+   321                                                                   E = cy_operators.cy_linalg_norm(vec_E)
+   322                                                                   self.A[cell_i, cell_i] -= gamma_ / d_cn * E
+   323                                                                   if cell_.id == face_.cells[0].id:
+   324                                                                       self.A[cell_i, face_.cells[1].id] = gamma_ / d_cn * E
+   325                                                                   else:
+   326                                                                       self.A[cell_i, face_.cells[0].id] = gamma_ / d_cn * E
+   327                                                                   self.b[cell_i] -= gamma_ * numpy.dot(phi_face_grad.A[face_.id], vec_T)
+   328                                                               elif face_.isBnd and bnd_type == "fixedValue":
+   329                                                                   vec_of = numpy.add(face_.C, -cell_.C)
+   330                                           #                        d_of = numpy.linalg.norm(vec_of)
+   331                                                                   d_of = cy_operators.cy_linalg_norm(vec_of)
+   332                                                                   unit_vec_of = vec_of / d_of
+   333                                                                   if   non_ortho_corr == "MINIMUM": # minimum correction approach
+   334                                                                       vec_E = numpy.dot(unit_vec_of, face_.Sf * face_.get_Sf_sign(cell_)) * unit_vec_of
+   335                                                                   elif non_ortho_corr == "ORTHOGONAL": # orthogonal correction approach
+   336                                                                       vec_E = face_.A * unit_vec_of
+   337                                                                   elif non_ortho_corr == "OVERRELAXED": # over-relaxed approach
+   338                                                                       vec_E = math.pow(face_.A, 2.) / numpy.dot(unit_vec_of, face_.Sf * face_.get_Sf_sign(cell_)) * unit_vec_of
+   339                                                                   else:
+   340                                                                       print non_ortho_corr + " non orhogonal correction is not implemented, use 'MINIMUM', 'ORTHOGONAL' or 'OVERRELAXED'"
+   341                                                                       sys.exit()
+   342                                                                   vec_T = numpy.add(face_.Sf * face_.get_Sf_sign(cell_), -vec_E)
+   343                                           #                        E = numpy.linalg.norm(vec_E)
+   344                                                                   E = cy_operators.cy_linalg_norm(vec_E)
+   345                                                                   self.A[cell_i, cell_i] -= gamma_ / d_of * E
+   346                                                                   self.b[cell_i] -= gamma_ * volume_field.A[face_.id] / d_of * E
+   347                                                                   self.b[cell_i] -= gamma_ * numpy.dot(phi_face_grad.A[face_.id], vec_T)
+   348                                                               elif face_.isBnd and bnd_type == "fixedGradient":
+   349                                                                   for patch_face_i,patch_face in enumerate(mesh_.patches[face_.bndId].faces):
+   350                                                                       if patch_face.id == face_.id:
+   351                                                                           self.b[cell_i] -= gamma_ * volume_field.patches[face_.bndId].values[patch_face_i] * face_.A
+   352                                                               else:
+   353                                                                   sys.exit("error in pyCFD_operators.explicit_operators.Laplace, stopping...")
+

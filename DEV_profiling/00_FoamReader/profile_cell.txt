@@ -1,0 +1,53 @@
+
+Processing mesh...
+MESH READ in 1.21838784218 s
+
+=========================
+MESH DATA:
+- number of vertices: 1024
+- number of faces: 1904
+-- number of boundary faces: 1024
+-- number of internal faces: 880
+- number of cells: 464
+- number of patches: 5
+-- inlet
+-- side
+-- walls
+-- outlet
+-- frontAndRear
+=========================
+
+Writing mesh file...
+   DONE in 0.212318897247 s
+
+tetra not tested yet!
+
+testMesh FINSHED
+Wrote profile results to testMesh.py.lprof
+Timer unit: 1e-06 s
+
+File: pyCFD_mesh/cell.py
+Function: create_cell_from_faces at line 130
+Total time: 0.484725 s
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+   130                                               @profile   
+   131                                               def create_cell_from_faces(self, face_list):
+   132                                                   # find list of independent vertices
+   133       464          665      1.4      0.1          vertex_list = []
+   134      3248         3065      0.9      0.6          for face_ in face_list:
+   135     13920        14095      1.0      2.9              for vertex_ in face_.vertices:
+   136     11136        12433      1.1      2.6                  vertex_list.append(vertex_)
+   137       464       120867    260.5     24.9          indep_vertices = vertex.get_independent_vertices(vertex_list)
+   138       464          899      1.9      0.2          self.vertices.extend(indep_vertices)
+   139                                                   
+   140                                                   # add faces
+   141       464          634      1.4      0.1          self.faces.extend(face_list)
+   142                                                   
+   143                                                   # calculate volume and centroid
+   144       464       330353    712.0     68.2          centr_and_vol = geomTools.polyhedron_centroid_and_volume(self,face_list)
+   145                                                   
+   146       464         1137      2.5      0.2          self.C = centr_and_vol[0]
+   147       464          577      1.2      0.1          self.V = centr_and_vol[1]
+

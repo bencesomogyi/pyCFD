@@ -1,0 +1,156 @@
+****************
+gs sparse numpy:
+****************
+Processing mesh...
+MESH READ in 1.00699996948 s
+
+Writing field file 0 ...
+   DONE in 0.302000045776 s
+
+calculating lu decomposition for pressure...
+DONE in 5.15799999237 s
+================================================
+Timestep 1: t = 0.025s | dt = 0.025
+================================================
+Residual for U x: 0.930954636965
+Residual for U y: 0.0
+Residual for U z: 0.0
+predictor divergence: 0.000143773387984
+Residual for p_corr: 154.883579722
+corrector divergence: 0.00010590022126
+================================================
+Timestep 2: t = 0.05s | dt = 0.025
+================================================
+Residual for U x: 1.50839445916
+Residual for U y: 0.0285797715857
+Residual for U z: 0.0
+predictor divergence: 0.000186057971037
+Residual for p_corr: 137.081181559
+corrector divergence: 3.62310457367e-05
+================================================
+Timestep 3: t = 0.075s | dt = 0.025
+================================================
+Residual for U x: 2.11720519429
+Residual for U y: 0.0728967005979
+Residual for U z: 0.0
+predictor divergence: 0.000205214385428
+Residual for p_corr: 169.75088539
+corrector divergence: 7.09216273787e-05
+
+Writing field file 1 ...
+   DONE in 0.304999828339 s
+================================================
+Timestep 4: t = 0.1s | dt = 0.025
+================================================
+Residual for U x: 3.12575663535
+Residual for U y: 0.128820334413
+Residual for U z: 0.0
+predictor divergence: 0.000322769459079
+Residual for p_corr: 7.49790054647
+corrector divergence: 0.000147775225117
+
+finished test2DchannelFlow in 371.095000029 s
+*****************
+gs sparse cython:
+*****************
+Processing mesh...
+MESH READ in 1.007999897 s
+
+Writing field file 0 ...
+   DONE in 0.302999973297 s
+
+calculating lu decomposition for pressure...
+DONE in 5.13499999046 s
+================================================
+Timestep 1: t = 0.025s | dt = 0.025
+================================================
+Residual for U x: 0.930954636965
+Residual for U y: 0.0
+Residual for U z: 0.0
+predictor divergence: 0.000143773387984
+Residual for p_corr: 154.883579722
+corrector divergence: 0.00010590022126
+================================================
+Timestep 2: t = 0.05s | dt = 0.025
+================================================
+Residual for U x: 1.50839445916
+Residual for U y: 0.0285797715857
+Residual for U z: 0.0
+predictor divergence: 0.000186057971037
+Residual for p_corr: 137.081181559
+corrector divergence: 3.62310457367e-05
+================================================
+Timestep 3: t = 0.075s | dt = 0.025
+================================================
+Residual for U x: 2.11720519429
+Residual for U y: 0.0728967005979
+Residual for U z: 0.0
+predictor divergence: 0.000205214385428
+Residual for p_corr: 169.75088539
+corrector divergence: 7.09216273787e-05
+
+Writing field file 1 ...
+   DONE in 0.47000002861 s
+================================================
+Timestep 4: t = 0.1s | dt = 0.025
+================================================
+Residual for U x: 3.12575663535
+Residual for U y: 0.128820334413
+Residual for U z: 0.0
+predictor divergence: 0.000322769459079
+Residual for p_corr: 7.49790054647
+corrector divergence: 0.000147775225117
+
+finished test2DchannelFlow in 119.200999975 s
+*****************
+gs dense numpy:
+*****************
+Processing mesh...
+MESH READ in 1.02300000191 s
+
+Writing field file 0 ...
+   DONE in 0.30999994278 s
+
+calculating lu decomposition for pressure...
+DONE in 5.35700011253 s
+================================================
+Timestep 1: t = 0.025s | dt = 0.025
+================================================
+Residual for U x: 0.930954636965
+Residual for U y: 0.0
+Residual for U z: 0.0
+predictor divergence: 0.000143773387984
+Residual for p_corr: 154.883579722
+corrector divergence: 0.00010590022126
+================================================
+Timestep 2: t = 0.05s | dt = 0.025
+================================================
+Residual for U x: 1.50839445916
+Residual for U y: 0.0285797715857
+Residual for U z: 0.0
+predictor divergence: 0.000186057971037
+Residual for p_corr: 137.081181559
+corrector divergence: 3.62310457367e-05
+================================================
+Timestep 3: t = 0.075s | dt = 0.025
+================================================
+Residual for U x: 2.11720519429
+Residual for U y: 0.0728967005979
+Residual for U z: 0.0
+predictor divergence: 0.000205214385428
+Residual for p_corr: 169.75088539
+corrector divergence: 7.09216273787e-05
+
+Writing field file 1 ...
+   DONE in 0.306999921799 s
+================================================
+Timestep 4: t = 0.1s | dt = 0.025
+================================================
+Residual for U x: 3.12575663535
+Residual for U y: 0.128820334413
+Residual for U z: 0.0
+predictor divergence: 0.000322769459079
+Residual for p_corr: 7.49790054647
+corrector divergence: 0.000147775225117
+
+finished test2DchannelFlow in 62.1059999466 s

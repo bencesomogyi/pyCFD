@@ -1,0 +1,288 @@
+finished square cylinder example in 220.496999979 s
+Wrote profile results to squareCylinder.py.lprof
+Timer unit: 2.9171e-07 s
+
+File: pyCFD_fields\calculated_fields.py
+Function: __init__ at line 168
+Total time: 51.9203 s
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+   168                                               @profile
+   169                                               def __init__(self, volume_field, massflux_field, scheme_):
+   170        30          192      6.4      0.0          mesh_ = volume_field.father[0]
+   171        30          561     18.7      0.0          pyCFD_fields.fields.Field.__init__(self)
+   172        30          150      5.0      0.0          field_type = volume_field.type
+   173        30          143      4.8      0.0          if (field_type != "scalar") and (field_type != "vector"):
+   174                                                       raise TypeError(
+   175                                                       "unsupported field type '{}' for '{}'"
+   176                                                       ).format(self.__class__, volume_field.type)
+   177        30          150      5.0      0.0          scalar_field = False
+   178        30          131      4.4      0.0          if (field_type == "scalar"):
+   179        30          148      4.9      0.0              scalar_field = True
+   180                                                       
+   181        30          135      4.5      0.0          if scalar_field:
+   182        30        28965    965.5      0.0              surface_field = pyCFD_fields.fields.SurfaceScalarField(mesh_, volume_field.name)
+   183                                                   else:
+   184                                                       surface_field = pyCFD_fields.fields.SurfaceVectorField(mesh_, volume_field.name)
+   185                                                   
+   186        30          218      7.3      0.0          self.type = surface_field.type
+   187        30          147      4.9      0.0          self.name = volume_field.name
+   188        30          169      5.6      0.0          self.father.append(mesh_)
+   189        30          148      4.9      0.0          self.A = surface_field.A
+   190                                                   
+   191                                                   # get gradient field
+   192        30     95693171 3189772.4     53.8          grad_phi = GaussCellGradient(volume_field)
+   193                                                   
+   194    896670      4307244      4.8      2.4          for face_ind,face_ in enumerate(mesh_.faces):
+   195                                                       # keep boundary value at boundary faces
+   196    896640      4289363      4.8      2.4              if face_.isBnd:
+   197    456960      1952005      4.3      1.1                  if scalar_field: # scalar
+   198    456960      2584796      5.7      1.5                      self.A[face_ind] = volume_field.A[face_ind]
+   199                                                           else: # vector
+   200                                                               for component in range(2):
+   201                                                                   self.A[face_ind][component] = volume_field.A[face_ind][component]
+   202                                                           continue
+   203                                                       # update internal faces
+   204    439680      2529992      5.8      1.4              if massflux_field.A[face_ind] < 0.0:
+   205     98517       600992      6.1      0.3                  cell_ind_c = face_.cells[1].id
+   206     98517       484335      4.9      0.3                  cell_ind_d = face_.cells[0].id
+   207                                                       else:
+   208    341163      1869614      5.5      1.1                  cell_ind_c = face_.cells[0].id
+   209    341163      1736015      5.1      1.0                  cell_ind_d = face_.cells[1].id
+   210                                                       # calculate normalized value phi_tilda
+   211    439680      2377936      5.4      1.3              phi_c = volume_field.V[cell_ind_c]
+   212    439680      2379468      5.4      1.3              phi_d = volume_field.V[cell_ind_d]
+   213    439680      6903418     15.7      3.9              r_cd = numpy.add(mesh_.cells[cell_ind_d].C, -mesh_.cells[cell_ind_c].C)
+   214    439680      8712044     19.8      4.9              phi_u = phi_d - numpy.dot(grad_phi.V[cell_ind_c],2.*r_cd)
+   215    439680      2285412      5.2      1.3              phi_f = phi_u
+   216                                                       
+   217                                                       # check if high resolution can be applied
+   218    439680      2022515      4.6      1.1              high_resolution_mode = False
+   219    439680      2501800      5.7      1.4              if (phi_d - phi_u) != 0.:
+   220    263820      1225873      4.6      0.7                  high_resolution_mode = True
+   221                                                       
+   222                                                       # apply high resolution scheme
+   223                                                       
+   224    439680      1970011      4.5      1.1              if high_resolution_mode:
+   225    263820      1702202      6.5      1.0                  phi_tilda_c = (phi_c - phi_u) / (phi_d - phi_u)
+   226    263820      1205982      4.6      0.7                  phi_tilda_f = 0.
+   227    263820      1220193      4.6      0.7                  if scheme_ == "STOIC":
+   228    263820     19994129     75.8     11.2                      phi_tilda_f = self.STOIC(phi_tilda_c)
+   229    263820      1225213      4.6      0.7                  if scheme_ == "MINMOD":
+   230                                                               phi_tilda_f = self.MINMOD(phi_tilda_c)
+   231    263820      1799039      6.8      1.0                  phi_f = phi_tilda_f * (phi_d - phi_u) + phi_u
+   232                                                       
+   233    439680      1958086      4.5      1.1              if scalar_field: # scalar
+   234    439680      2424144      5.5      1.4                  self.A[face_ind] = phi_f
+   235                                                       else: # vector
+   236                                                           for component in range(2):
+   237                                                               print "In HRSFaceValue vector version is not implemented yet!"
+   238                                                               self.A[face_ind][component] = phi_f
+
+File: pyCFD_fields\calculated_fields.py
+Function: STOIC at line 240
+Total time: 2.08487 s
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+   240                                               @profile                
+   241                                               def STOIC(self, phi_tilda_c):
+   242    263820      1103841      4.2     15.4          phi_tilda_f = 0.
+   243    263820      1197170      4.5     16.8          if   (phi_tilda_c >= 0.) and (phi_tilda_c<=0.2):
+   244     15949        80427      5.0      1.1              phi_tilda_f = 3. * phi_tilda_c
+   245    247871      1093677      4.4     15.3          elif (phi_tilda_c > 0.2) and (phi_tilda_c<=0.5):
+   246     81463       486545      6.0      6.8              phi_tilda_f = 0.5 * phi_tilda_c + 0.5
+   247    166408       774237      4.7     10.8          elif (phi_tilda_c > 0.5) and (phi_tilda_c<=5./6.):
+   248     94024       577903      6.1      8.1              phi_tilda_f = 0.75 * phi_tilda_c + 3./8.
+   249     72384       488714      6.8      6.8          elif (phi_tilda_c > 5./6.) and (phi_tilda_c<=1):
+   250     11875        50403      4.2      0.7              phi_tilda_f = 1.
+   251                                                   else:
+   252     60509       242328      4.0      3.4              phi_tilda_f = phi_tilda_c
+   253    263820      1051821      4.0     14.7          return phi_tilda_f
+
+File: pyCFD_fields\calculated_fields.py
+Function: __init__ at line 294
+Total time: 55.8467 s
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+   294                                               @profile
+   295                                               def __init__(self, volume_field, nonConjIters_ = 0):
+   296                                                   """default constructor"""
+   297                                                   # define number of iterations
+   298        60          713     11.9      0.0          self.nonConjIters = nonConjIters_
+   299                                                   
+   300        60          515      8.6      0.0          mesh_ = volume_field.father[0]
+   301        60         1397     23.3      0.0          pyCFD_fields.fields.Field.__init__(self)
+   302        60          430      7.2      0.0          field_type = volume_field.type
+   303        60          430      7.2      0.0          if (field_type != "scalar"):
+   304                                                       raise TypeError(
+   305                                                       "unsupported field type '{}' for '{}'"
+   306                                                       ).format(self.__class__, volume_field.type)
+   307                                           
+   308        60          443      7.4      0.0          self.type = "vector"
+   309        60          584      9.7      0.0          self.name = volume_field.name+"_grad"
+   310        60          537      8.9      0.0          self.father.append(mesh_)
+   311                                                   
+   312        60     27008811 450146.8     14.1          face_phi = LinearFaceValue(volume_field)
+   313        60       177696   2961.6      0.1          grad_phi = pyCFD_fields.fields.VectorField(mesh_, "grad_phi")
+   314        60     24300519 405008.7     12.7          face_grad_phi = pyCFD_fields.fields.SurfaceVectorField(mesh_, "face_grad_phi")
+   315                                                   
+   316        60         4769     79.5      0.0          @profile    
+   317                                                   def update_cell_gradient():
+   318                                                       """
+   319                                                       update cell gradient field as in step 2
+   320                                                       """
+   321                                                       for cell_ in mesh_.cells:
+   322                                                           # face boundary values should be already updated!
+   323                                                           grad_phi.V[cell_.id] = numpy.zeros(3)
+   324                                                           for face_ in cell_.faces:
+   325                                                               face_value = face_phi.A[face_.id]                 
+   326                                                               face_Sf    = face_.get_Sf(cell_)
+   327                                                               grad_phi.V[cell_.id] += face_value * face_Sf
+   328                                           #                    grad_phi.V[cell_.id] += face_phi.A[face_.id] * face_.get_Sf(cell_)
+   329                                                           grad_phi.V[cell_.id] /= cell_.V
+   330                                                                       
+   331        60          482      8.0      0.0          def update_face_gradient():
+   332                                                       """
+   333                                                       update face gradients as in step 3
+   334                                                       """
+   335                                                       for face_ in mesh_.faces:
+   336                                                           if face_.isBnd == True:
+   337                                                               continue
+   338                                                           cell_o_id = face_.cells[0].id
+   339                                                           cell_n_id = face_.cells[1].id
+   340                                                           face_grad_phi.A[face_.id] = numpy.add(face_.gradWeights[0]*grad_phi.V[cell_o_id], face_.gradWeights[1]*grad_phi.V[cell_n_id])
+   341                                                                   
+   342        60          465      7.8      0.0          def update_face_value():
+   343                                                       """
+   344                                                       correct face values as in step 4
+   345                                                       """
+   346                                                       for face_ in mesh_.faces:
+   347                                                           if face_.isBnd == True:
+   348                                                               continue
+   349                                                           # value at fixed gradient boundaries are not corrected!
+   350                                                           face_phi.A[face_.id] += numpy.dot(face_grad_phi.A[face_.id], face_.ffToF)
+   351                                           
+   352        60          748     12.5      0.0          for iter_ in range(self.nonConjIters):
+   353                                                       update_cell_gradient()
+   354                                                       update_face_gradient()
+   355                                                       update_face_value()
+   356                                                       iter_ += 1
+   357                                                   
+   358        60    139946470 2332441.2     73.1          update_cell_gradient()
+   359                                           
+   360        60          537      8.9      0.0          self.V = grad_phi.V
+   361        60          566      9.4      0.0          self.A = face_grad_phi.A
+
+File: pyCFD_fields\calculated_fields.py
+Function: update_cell_gradient at line 316
+Total time: 31.7002 s
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+   316                                                   @profile    
+   317                                                   def update_cell_gradient():
+   318                                                       """
+   319                                                       update cell gradient field as in step 2
+   320                                                       """
+   321    445500      1211067      2.7      1.1              for cell_ in mesh_.cells:
+   322                                                           # face boundary values should be already updated!
+   323    445440      4920008     11.0      4.5                  grad_phi.V[cell_.id] = numpy.zeros(3)
+   324   3118080      9123339      2.9      8.4                  for face_ in cell_.faces:
+   325   2672640     11031446      4.1     10.2                      face_value = face_phi.A[face_.id]                 
+   326   2672640     30611694     11.5     28.2                      face_Sf    = face_.get_Sf(cell_)
+   327   2672640     45601590     17.1     42.0                      grad_phi.V[cell_.id] += face_value * face_Sf
+   328                                           #                    grad_phi.V[cell_.id] += face_phi.A[face_.id] * face_.get_Sf(cell_)
+   329    445440      6171208     13.9      5.7                  grad_phi.V[cell_.id] /= cell_.V
+
+File: pyCFD_operators\explicit_operators.py
+Function: __init__ at line 37
+Total time: 88.4199 s
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    37                                               @profile
+    38                                               def __init__(self, volume_field, massflux_field, type_):
+    39                                                   r"""
+    40                                                   constructor for Divergence operator
+    41                                           
+    42                                                   :param volume_field:    volume field to calculate the divergence for
+    43                                                   :type volume_field:     pyCFD_fields.fields.VolumeField
+    44                                                   :param massflux_field:  surface field with massflux values
+    45                                                   :type massflux_field:   pyCFD_fields.fields.SurfaceScalarField
+    46                                                   :param type_:           type of scheme to calculate the face values with. Available types are in pyCFD_fields.calculated_fields.HRSFaceValue .
+    47                                                   :type type_:            string
+    48                                                   """
+    49        60          568      9.5      0.0          mesh_ = massflux_field.father[0]
+    50        60        17594    293.2      0.0          pyCFD_operators.generic_operator.GenericScalarOperator.__init__(self, mesh_)
+    51                                                   
+    52        60          331      5.5      0.0          cell_number = len(mesh_.cells)
+    53                                           #        self.A         = numpy.zeros((cell_number,cell_number))
+    54        60         8369    139.5      0.0          self.A         = scipy.sparse.dok_matrix((cell_number, cell_number))
+    55        60         1458     24.3      0.0          self.b         = numpy.zeros((cell_number,1))
+    56                                                   
+    57        60          253      4.2      0.0          if volume_field is not None:
+    58                                           #            self.x_old     = volume_field.V
+    59                                           #            self.x_old_old = volume_field.V
+    60        30          108      3.6      0.0              if type_ == "UDS":
+    61                                                           face_field = pyCFD_fields.calculated_fields.UpwindFaceValue(volume_field, massflux_field)
+    62        30          113      3.8      0.0              elif type_ == "STOIC":
+    63        30    233321992 7777399.7     77.0                  face_field = pyCFD_fields.calculated_fields.HRSFaceValue(volume_field, massflux_field, "STOIC")
+    64                                                       elif type_ == "MINMOD":
+    65                                                           face_field = pyCFD_fields.calculated_fields.HRSFaceValue(volume_field, massflux_field, "MINMOD")
+    66                                                       else:
+    67                                                           print type_+" surface interpolation is not supported, use 'UDS', 'MINMOD' or 'STOIC'"
+    68                                                           sys.exit()
+    69                                                       
+    70    222750       841748      3.8      0.3              for cell_i,cell_ in enumerate(mesh_.cells):
+    71   1559040      6426618      4.1      2.1                  for face_ in cell_.faces:
+    72   1336320     28467876     21.3      9.4                      self.b[cell_i] -= massflux_field.A[face_.id] * face_field.A[face_.id] * face_.get_Sf_sign(cell_)
+    73                                                   else:
+    74    222750       830962      3.7      0.3              for cell_i,cell_ in enumerate(mesh_.cells):
+    75   1559040      6397566      4.1      2.1                  for face_ in cell_.faces:
+    76   1336320     26793849     20.1      8.8                      self.b[cell_i] -= massflux_field.A[face_.id] * face_.get_Sf_sign(cell_)
+
+File: pyCFD_operators\explicit_operators.py
+Function: __init__ at line 84
+Total time: 83.7441 s
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    84                                               @profile
+    85                                               def __init__(self, volume_field, massflux_field, type_):
+    86                                                   r"""
+    87                                                   constructor for volume vector Divergence operator
+    88                                           
+    89                                                   :param volume_field:    volume field to calculate the divergence for
+    90                                                   :type volume_field:     pyCFD_fields.fields.VolumeField
+    91                                                   :param massflux_field:  surface field with massflux values
+    92                                                   :type massflux_field:   pyCFD_fields.fields.SurfaceScalarField
+    93                                                   :param type_:           type of scheme to calculate the face values with. Available types are in pyCFD_fields.calculated_fields.HRSFaceValue .
+    94                                                   :type type_:            string
+    95                                                   """
+    96        10          111     11.1      0.0          mesh_ = volume_field.father[0]
+    97        10         2578    257.8      0.0          pyCFD_operators.generic_operator.GenericVectorOperator.__init__(self, mesh_)
+    98                                                   
+    99                                                   # x component
+   100        10      1822293 182229.3      0.6          volume_field_x = volume_field.get_component_as_scalar_field(0)
+   101        10    100286098 10028609.8     34.9          divergence_x = Divergence(volume_field_x, massflux_field, type_)
+   102        10           95      9.5      0.0          self.AX = divergence_x.A
+   103        10           90      9.0      0.0          self.bX = divergence_x.b
+   104                                           #        self.xX_old = divergence_x.x_old
+   105                                           #        self.xX_old_old = divergence_x.x_old_old
+   106                                                   
+   107                                                   # y component
+   108        10      1822732 182273.2      0.6          volume_field_y = volume_field.get_component_as_scalar_field(1)
+   109        10    100439719 10043971.9     35.0          divergence_y = Divergence(volume_field_y, massflux_field, type_)
+   110        10           62      6.2      0.0          self.AY = divergence_y.A
+   111        10          215     21.5      0.0          self.bY = divergence_y.b
+   112                                           #        self.xY_old = divergence_y.x_old
+   113                                           #        self.xY_old_old = divergence_y.x_old_old
+   114                                                   
+   115                                                   # z component
+   116        10      1810169 181016.9      0.6          volume_field_z = volume_field.get_component_as_scalar_field(2)
+   117        10     80895779 8089577.9     28.2          divergence_z = Divergence(volume_field_z, massflux_field, type_)
+   118        10           59      5.9      0.0          self.AZ = divergence_z.A
+   119        10          264     26.4      0.0          self.bZ = divergence_z.b

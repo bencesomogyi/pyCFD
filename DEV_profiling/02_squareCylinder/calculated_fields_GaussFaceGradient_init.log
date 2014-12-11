@@ -1,0 +1,97 @@
+finished square cylinder example in 632.823421955 s
+Wrote profile results to squareCylinder.py.lprof
+Timer unit: 1e-06 s
+
+File: pyCFD_fields/calculated_fields.py
+Function: __init__ at line 369
+Total time: 416.508 s
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+   369                                               @profile
+   370                                               def __init__(self, volume_field, nonConjIters_ = 0):
+   371                                                   """default constructor"""
+   372                                                   # define number of iterations
+   373         4           25      6.2      0.0          self.nonConjIters = nonConjIters_
+   374                                                   
+   375         4           20      5.0      0.0          mesh_ = volume_field.father[0]
+   376         4           50     12.5      0.0          pyCFD_fields.fields.Field.__init__(self)
+   377         4           15      3.8      0.0          field_type = volume_field.type
+   378         4           14      3.5      0.0          if (field_type != "scalar"):
+   379                                                       raise TypeError(
+   380                                                       "unsupported field type '{}' for '{}'"
+   381                                                       ).format(self.__class__, volume_field.type)
+   382                                           
+   383         4           14      3.5      0.0          self.type = "vector"
+   384         4           20      5.0      0.0          self.name = volume_field.name+"_grad"
+   385         4           20      5.0      0.0          self.father.append(mesh_)
+   386                                                   
+   387         4       963521 240880.2      0.2          face_phi = LinearFaceValue(volume_field)
+   388         4         2875    718.8      0.0          grad_phi = pyCFD_fields.fields.VectorField(mesh_, "grad_phi")
+   389         4       857685 214421.2      0.2          face_grad_phi = pyCFD_fields.fields.SurfaceVectorField(mesh_, "face_grad_phi")
+   390                                                       
+   391         4           33      8.2      0.0          def update_cell_gradient():
+   392                                                       """
+   393                                                       update cell gradient field as in step 2
+   394                                                       """
+   395                                                       for cell_ in mesh_.cells:
+   396                                                           # face boundary values should be already updated!
+   397                                                           grad_phi.V[cell_.id] = numpy.array([0., 0., 0.])
+   398                                                           for face_ in cell_.faces:
+   399                                                               grad_phi.V[cell_.id] += face_phi.A[face_.id] * face_.get_Sf(cell_)
+   400                                                           grad_phi.V[cell_.id] /= cell_.V
+   401                                                                       
+   402         4           16      4.0      0.0          def update_face_gradient():
+   403                                                       """
+   404                                                       update face gradients as in step 3
+   405                                                       """
+   406                                                       for face_ in mesh_.faces:
+   407                                                           if face_.isBnd == True:
+   408                                                               continue
+   409                                                           cell_o_id = face_.cells[0].id
+   410                                                           cell_n_id = face_.cells[1].id
+   411                                                           face_grad_phi.A[face_.id] = numpy.add(face_.gradWeights[0]*grad_phi.V[cell_o_id], face_.gradWeights[1]*grad_phi.V[cell_n_id])
+   412                                                                   
+   413         4           17      4.2      0.0          def update_face_value():
+   414                                                       """
+   415                                                       correct face values as in step 4
+   416                                                       """
+   417                                                       for face_ in mesh_.faces:
+   418                                                           if face_.isBnd == True:
+   419                                                               # value at fixed gradient boundaries are not corrected!
+   420                                                               continue
+   421                                                           face_phi.A[face_.id] += numpy.dot(face_grad_phi.A[face_.id], face_.ffToF)
+   422                                           
+   423         4           32      8.0      0.0          for iter_ in range(self.nonConjIters):
+   424                                                       update_cell_gradient()
+   425                                                       update_face_gradient()
+   426                                                       update_face_value()
+   427                                                       iter_ += 1
+   428                                           
+   429         4           16      4.0      0.0          if self.nonConjIters > -1:
+   430    119556       543009      4.5      0.1              for face_i,face_ in enumerate(mesh_.faces):
+   431                                                           # apply fixedGradient boundaries
+   432    119552       533702      4.5      0.1                  if face_.isBnd == True and volume_field.patches[face_.bndId].type == "fixedGradient":
+   433     60688       223877      3.7      0.1                      patch_ = volume_field.patches[face_.bndId]
+   434     60688    409266539   6743.8     98.3                      face_grad_phi.A[face_i] = patch_.values[patch_.find_face_id_in_patch(face_)]
+   435                                                           # calculate boundary gradient at fixedValue boundaries
+   436     58864       204452      3.5      0.0                  elif face_.isBnd == True and volume_field.patches[face_.bndId].type == "fixedValue":
+   437       240          847      3.5      0.0                      patch_ = volume_field.patches[face_.bndId]
+   438       240         2751     11.5      0.0                      vec_of = numpy.add(face_.C, -face_.cells[0].C)
+   439       240         1328      5.5      0.0                      d_of = cy_operators.cy_linalg_norm(vec_of)
+   440                                           #                    d_of = numpy.linalg.norm(vec_of)
+   441       240         2251      9.4      0.0                      unit_vec_of = vec_of / d_of
+   442       240        10134     42.2      0.0                      face_grad_phi.A[face_i] = (patch_.values[patch_.find_face_id_in_patch(face_)] - volume_field.V[face_.cells[0].id]) / d_of * unit_vec_of                
+   443                                                           # decrease stencil for face gradients, REFERENCE: Darwish: 9.36,
+   444                                                           else:
+   445     58624       218038      3.7      0.1                      o_cell = face_.cells[0]
+   446     58624       205051      3.5      0.0                      n_cell = face_.cells[1]
+   447     58624       595870     10.2      0.1                      vec_on = numpy.add(n_cell.C, -o_cell.C)
+   448     58624       333512      5.7      0.1                      d_on = cy_operators.cy_linalg_norm(vec_on)
+   449                                           #                    d_on = numpy.linalg.norm(vec_on)
+   450     58624       552890      9.4      0.1                      unit_vec_on = vec_on / d_on
+   451     58624       986632     16.8      0.2                      face_grad_phi.A[face_i] -= numpy.dot(face_grad_phi.A[face_i], unit_vec_on) * unit_vec_on
+   452     58624      1002658     17.1      0.2                      face_grad_phi.A[face_i] += (volume_field.V[n_cell.id] - volume_field.V[o_cell.id]) / d_on * unit_vec_on
+   453                                                               
+   454         4           22      5.5      0.0          self.A = face_grad_phi.A
+

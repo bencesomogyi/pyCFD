@@ -1,0 +1,8 @@
+:%s/gif/png/g
+/colbar_ANIM_U.png
+2dd
+/colbar_ANIM_U.png
+2dd
+/colbar_ANIM_P.png
+2dd
+:wq

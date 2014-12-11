@@ -1,0 +1,2 @@
+- IMEX scheme +3/2 and -1/2 maybe mixed?
+- velo boundary conditions are not updated before p_corr equation

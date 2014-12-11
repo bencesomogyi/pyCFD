@@ -1,0 +1,1 @@
+E:\PhD\lectures\steiner_cfd\steiner_project\pyCFD_doc>E:\installed\python\WinPython-32bit-2.7.6.3\python-2.7.6\Scripts\sphinx-build.exe -b html . E:\PhD\lectures\steiner_cfd\steiner_project\pyCFD_doc\_build\html

@@ -1,0 +1,7 @@
+===========================================================================
+TODO:
+. check implicit laplace MINIMAL and ORTHOGONAL implementations
+
+===========================================================================
+CHECED:
+. no recalc of laplace coeff matrices

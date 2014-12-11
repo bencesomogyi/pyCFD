@@ -1,0 +1,3 @@
+LIBRARY cy_geometric_tools.pyd
+EXPORTS
+initcy_geometric_tools

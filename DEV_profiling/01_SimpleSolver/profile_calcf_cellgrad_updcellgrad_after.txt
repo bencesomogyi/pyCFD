@@ -1,0 +1,266 @@
+
+Processing mesh...
+MESH READ in 0.530281066895 s
+
+Writing field file 0 ...
+   DONE in 0.112631797791 s
+========================
+Timestep 1: 0.001s
+========================
+Residual for U x: 0.0930705610474
+Residual for U y: 0.0
+Residual for U z: 0.0
+predictor divergence: 0.000190894946629
+Residual for p_corr: 1121.56989284
+corrector divergence: 4.55929443839e-05
+========================
+Timestep 2: 0.002s
+========================
+Residual for U x: 1.13368617332
+Residual for U y: 0.00550282215669
+Residual for U z: 0.0
+predictor divergence: 0.000224090199252
+Residual for p_corr: 2346.62845937
+corrector divergence: 5.63882711577e-05
+========================
+Timestep 3: 0.003s
+========================
+Residual for U x: 0.37428925788
+Residual for U y: 0.0158398162721
+Residual for U z: 0.0
+predictor divergence: 0.000104817705454
+Residual for p_corr: 1377.16704795
+corrector divergence: 7.32162867045e-05
+========================
+Timestep 4: 0.004s
+========================
+Residual for U x: 0.0977206499588
+Residual for U y: 0.011655398549
+Residual for U z: 0.0
+predictor divergence: 7.74368701046e-05
+Residual for p_corr: 188.23711892
+corrector divergence: 5.41589841963e-05
+========================
+Timestep 5: 0.005s
+========================
+Residual for U x: 0.226914345525
+Residual for U y: 0.0104266632375
+Residual for U z: 0.0
+predictor divergence: 7.78648198295e-05
+Residual for p_corr: 38.9321673625
+corrector divergence: 1.93928136337e-05
+
+Writing field file 1 ...
+   DONE in 0.121203899384 s
+========================
+Timestep 6: 0.006s
+========================
+Residual for U x: 0.265000938812
+Residual for U y: 0.00919543189875
+Residual for U z: 0.0
+predictor divergence: 3.98863493437e-05
+Residual for p_corr: 3.35901974729
+corrector divergence: 2.58834413034e-05
+========================
+Timestep 7: 0.007s
+========================
+Residual for U x: 0.179234517374
+Residual for U y: 0.00820239715768
+Residual for U z: 0.0
+predictor divergence: 4.43816555348e-05
+Residual for p_corr: 2.25283358277
+corrector divergence: 2.94122493346e-05
+========================
+Timestep 8: 0.008s
+========================
+Residual for U x: 0.0883439093763
+Residual for U y: 0.00733074637223
+Residual for U z: 0.0
+predictor divergence: 3.13360548226e-05
+Residual for p_corr: 1.09002693707
+corrector divergence: 2.25046176921e-05
+========================
+Timestep 9: 0.009s
+========================
+Residual for U x: 0.0965048928021
+Residual for U y: 0.00656217439787
+Residual for U z: 0.0
+predictor divergence: 3.48563827616e-05
+Residual for p_corr: 1.78799787901
+corrector divergence: 1.08132552311e-05
+========================
+Timestep 10: 0.01s
+========================
+Residual for U x: 0.136368947007
+Residual for U y: 0.00587951396123
+Residual for U z: 0.0
+predictor divergence: 2.19212445291e-05
+Residual for p_corr: 1.45034301213
+corrector divergence: 8.92491426349e-06
+
+Writing field file 2 ...
+   DONE in 0.118710041046 s
+========================
+Timestep 11: 0.011s
+========================
+Residual for U x: 0.104506070771
+Residual for U y: 0.0052713608161
+Residual for U z: 0.0
+predictor divergence: 1.89455388222e-05
+Residual for p_corr: 1.14104472202
+corrector divergence: 1.41099229046e-05
+========================
+Timestep 12: 0.012s
+========================
+Residual for U x: 0.0406631980199
+Residual for U y: 0.00472843658429
+Residual for U z: 0.0
+predictor divergence: 1.49781742336e-05
+Residual for p_corr: 0.398989656492
+corrector divergence: 1.33582584617e-05
+========================
+Timestep 13: 0.013s
+========================
+Residual for U x: 0.0359472874928
+Residual for U y: 0.00424302082619
+Residual for U z: 0.0
+predictor divergence: 1.54007882847e-05
+Residual for p_corr: 0.762343506167
+corrector divergence: 7.72149007839e-06
+========================
+Timestep 14: 0.014s
+========================
+Residual for U x: 0.0577651748201
+Residual for U y: 0.00380846081399
+Residual for U z: 0.0
+predictor divergence: 1.0767700004e-05
+Residual for p_corr: 0.674807020263
+corrector divergence: 6.84799037277e-06
+========================
+Timestep 15: 0.015s
+========================
+Residual for U x: 0.0506709264975
+Residual for U y: 0.00348727169009
+Residual for U z: 0.0
+predictor divergence: 7.75307339895e-06
+Residual for p_corr: 0.536072516309
+corrector divergence: 6.82266354679e-06
+
+Writing field file 3 ...
+   DONE in 0.126996994019 s
+========================
+Timestep 16: 0.016s
+========================
+Residual for U x: 0.0271243311149
+Residual for U y: 0.00328287365872
+Residual for U z: 0.0
+predictor divergence: 7.04023644811e-06
+Residual for p_corr: 0.243239859803
+corrector divergence: 6.80468848384e-06
+========================
+Timestep 17: 0.017s
+========================
+Residual for U x: 0.0205435037393
+Residual for U y: 0.00308510158134
+Residual for U z: 0.0
+predictor divergence: 6.79475432693e-06
+Residual for p_corr: 0.304325741874
+corrector divergence: 6.79180247402e-06
+========================
+Timestep 18: 0.018s
+========================
+Residual for U x: 0.0310071709974
+Residual for U y: 0.00289409185713
+Residual for U z: 0.0
+predictor divergence: 6.78610662e-06
+Residual for p_corr: 0.310783009041
+corrector divergence: 6.78244605939e-06
+========================
+Timestep 19: 0.019s
+========================
+Residual for U x: 0.0296997201858
+Residual for U y: 0.00271024765631
+Residual for U z: 0.0
+predictor divergence: 6.77954089559e-06
+Residual for p_corr: 0.248448427216
+corrector divergence: 6.77554707196e-06
+========================
+Timestep 20: 0.02s
+========================
+Residual for U x: 0.0191407181963
+Residual for U y: 0.00253384816104
+Residual for U z: 0.0
+predictor divergence: 6.77444966572e-06
+Residual for p_corr: 0.136497469564
+corrector divergence: 6.770349335e-06
+
+Writing field file 4 ...
+   DONE in 0.122367858887 s
+
+Wrote profile results to test2DChannelFlow.py.lprof
+Timer unit: 1e-06 s
+
+File: pyCFD_fields/calculated_fields.py
+Function: update_cell_gradient at line 307
+Total time: 1.76053 s
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+   307                                                   @profile
+   308                                                   def update_cell_gradient():
+   309                                                       """
+   310                                                       update cell gradient field as in step 2
+   311                                                       """
+   312     15060        19449      1.3      1.1              for cell_ in mesh_.cells:
+   313                                                           # face boundary values should be already updated!
+   314     15000        87496      5.8      5.0                  grad_phi.V[cell_.id] = numpy.zeros(3)
+   315    105000       153087      1.5      8.7                  for face_ in cell_.faces:
+   316     90000      1375673     15.3     78.1                      grad_phi.V[cell_.id] += face_phi.A[face_.id] * face_.get_Sf(cell_)
+   317     15000       124829      8.3      7.1                  grad_phi.V[cell_.id] /= cell_.V
+
+File: pyCFD_operators/explicit_operators.py
+Function: __init__ at line 30
+Total time: 3.18234 s
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    30                                               @profile
+    31                                               def __init__(self, volume_field, massflux_field, type_):
+    32                                                   r"""
+    33                                                   constructor for Divergence operator
+    34                                           
+    35                                                   :param volume_field:    volume field to calculate the divergence for
+    36                                                   :type volume_field:     pyCFD_fields.fields.VolumeField
+    37                                                   :param massflux_field:  surface field with massflux values
+    38                                                   :type massflux_field:   pyCFD_fields.fields.SurfaceScalarField
+    39                                                   :param type_:           type of scheme to calculate the face values with. Available types are in pyCFD_fields.calculated_fields.HRSFaceValue .
+    40                                                   :type type_:            string
+    41                                                   """
+    42       120          408      3.4      0.0          mesh_ = massflux_field.father[0]
+    43       120         1874     15.6      0.1          pyCFD_operators.generic_operator.GenericScalarOperator.__init__(self, mesh_)
+    44                                                   
+    45       120          846      7.0      0.0          cell_number = len(mesh_.cells)
+    46       120        16014    133.4      0.5          self.A         = numpy.zeros((cell_number,cell_number))
+    47       120          606      5.0      0.0          self.b         = numpy.zeros((cell_number,1))
+    48                                                   
+    49       120          217      1.8      0.0          if volume_field is not None:
+    50                                           #            self.x_old     = volume_field.V
+    51                                           #            self.x_old_old = volume_field.V
+    52        60           97      1.6      0.0              if type_ == "UDS":
+    53        60       313129   5218.8      9.8                  face_field = pyCFD_fields.calculated_fields.UpwindFaceValue(volume_field, massflux_field)
+    54                                                       elif type_ == "STOIC":
+    55                                                           face_field = pyCFD_fields.calculated_fields.HRSFaceValue(volume_field, massflux_field, "STOIC")
+    56                                                       elif type_ == "MINMOD":
+    57                                                           face_field = pyCFD_fields.calculated_fields.HRSFaceValue(volume_field, massflux_field, "MINMOD")
+    58                                                       else:
+    59                                                           print type_+" surface interpolation is not supported, use 'UDS', 'MINMOD' or 'STOIC'"
+    60                                                           sys.exit()
+    61                                                       
+    62     15060        23752      1.6      0.7              for cell_i,cell_ in enumerate(mesh_.cells):
+    63    105000       193455      1.8      6.1                  for face_ in cell_.faces:
+    64     90000      1218677     13.5     38.3                      self.b[cell_i] -= massflux_field.A[face_.id] * face_field.A[face_.id] * face_.get_Sf_sign(cell_)
+    65                                                   else:
+    66     15060        24527      1.6      0.8              for cell_i,cell_ in enumerate(mesh_.cells):
+    67    105000       203231      1.9      6.4                  for face_ in cell_.faces:
+    68     90000      1185503     13.2     37.3                      self.b[cell_i] -= massflux_field.A[face_.id] * face_.get_Sf_sign(cell_)
+

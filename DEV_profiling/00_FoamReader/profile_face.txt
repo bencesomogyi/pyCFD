@@ -1,0 +1,81 @@
+
+Processing mesh...
+MESH READ in 1.35538101196 s
+
+=========================
+MESH DATA:
+- number of vertices: 1024
+- number of faces: 1904
+-- number of boundary faces: 1024
+-- number of internal faces: 880
+- number of cells: 464
+- number of patches: 5
+-- inlet
+-- side
+-- walls
+-- outlet
+-- frontAndRear
+=========================
+
+Writing mesh file...
+   DONE in 0.208593130112 s
+
+tetra not tested yet!
+
+testMesh FINSHED
+Wrote profile results to testMesh.py.lprof
+Timer unit: 1e-06 s
+
+File: pyCFD_mesh/face.py
+Function: __init__ at line 20
+Total time: 0.590523 s
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    20                                               @profile
+    21                                               def __init__(self,vertexList):
+    22      1904         8683      4.6      1.5          mesh_object.MeshObject.__init__(self)
+    23                                                   # check vertex input
+    24      1904         3469      1.8      0.6          node_number = len(vertexList)
+    25      1904         3165      1.7      0.5          if ((node_number != 3) and (node_number != 4)):
+    26                                                       print self, ' created with an invalid number of vertices, should be 3 or 4'
+    27                                                       return
+    28      1904         3052      1.6      0.5          nodesIndependent = True
+    29      7616        13699      1.8      2.3          for indVertI in range(len(vertexList)-1):
+    30     17136        29077      1.7      4.9              for vertJ in vertexList[indVertI+1:]:
+    31     11424        32270      2.8      5.5                  if vertex.are_vertices_equal(vertexList[indVertI],vertJ):
+    32                                                               nodesIndependent = False
+    33      1904         3169      1.7      0.5          if nodesIndependent == False:
+    34                                                       print 'nodes are not independent in ', self
+    35                                                       sys.exit()
+    36                                                       return
+    37                                                       
+    38                                                   # get face centroid and area
+    39      1904       411706    216.2     69.7          centr_and_area = geomTools.polygon_centroid_and_area(vertexList)
+    40                                                   
+    41                                                   # initialize Sf with 0,0,0
+    42      1904        25402     13.3      4.3          Sf = numpy.array([0., 0., 0.])
+    43                                           
+    44      1904         4124      2.2      0.7          self.A = centr_and_area[1]
+    45                                                   """face areas [m2]"""
+    46      1904         3111      1.6      0.5          self.Sf = Sf
+    47                                                   """face area vectors [m2]"""
+    48      1904         3101      1.6      0.5          self.vertices = vertexList
+    49                                                   """list of vertices defining the face"""
+    50      1904         3155      1.7      0.5          self.cells = []
+    51                                                   """list of connected cells"""
+    52      1904         4606      2.4      0.8          self.isBnd = False
+    53                                                   """bool for boundary faces"""
+    54      1904         3199      1.7      0.5          self.bndId = -1
+    55                                                   """boundary ID of face"""
+    56      1904         3244      1.7      0.5          self.C = centr_and_area[0]
+    57                                                   """face centroid"""
+    58      1904         3098      1.6      0.5          self.weights = []
+    59                                                   """weights for linear interpolation [w_owner, w_neigbour]"""
+    60      1904         3006      1.6      0.5          self.gradWeights = []
+    61                                                   """weights for Gauss gradient correction [w_owner, w_neigbour]"""        
+    62      1904        19791     10.4      3.4          self.ffToF = numpy.array([0., 0., 0.])
+    63                                                   """is the shortest vector starting from the line between owner and neighbour pointing to the face centroid"""
+    64      1904         3528      1.9      0.6          self.id = 0
+    65      1904         2868      1.5      0.5          """face id"""
+

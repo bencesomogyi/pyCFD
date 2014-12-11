@@ -1,0 +1,111 @@
+finished square cylinder example in 181.367999792 s
+Wrote profile results to squareCylinder.py.lprof
+Timer unit: 2.9171e-07 s
+
+File: pyCFD_fields\calculated_fields.py
+Function: update_cell_gradient at line 313
+Total time: 27.7904 s
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+   313                                                   @profile    
+   314                                                   def update_cell_gradient():
+   315                                                       """
+   316                                                       update cell gradient field as in step 2
+   317                                                       """
+   318    445500      1272024      2.9      1.3              for cell_ in mesh_.cells:
+   319                                                           # face boundary values should be already updated!
+   320    445440      5039102     11.3      5.3                  grad_phi.V[cell_.id] = numpy.zeros(3)
+   321   3118080      9882180      3.2     10.4                  for face_ in cell_.faces:
+   322   2672640     72826951     27.2     76.4                      grad_phi.V[cell_.id] += face_phi.A[face_.id] * face_.get_Sf(cell_)
+   323    445440      6246897     14.0      6.6                  grad_phi.V[cell_.id] /= cell_.V
+
+File: pyCFD_operators\explicit_operators.py
+Function: __init__ at line 37
+Total time: 57.0323 s
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    37                                               @profile
+    38                                               def __init__(self, volume_field, massflux_field, type_):
+    39                                                   r"""
+    40                                                   constructor for Divergence operator
+    41                                           
+    42                                                   :param volume_field:    volume field to calculate the divergence for
+    43                                                   :type volume_field:     pyCFD_fields.fields.VolumeField
+    44                                                   :param massflux_field:  surface field with massflux values
+    45                                                   :type massflux_field:   pyCFD_fields.fields.SurfaceScalarField
+    46                                                   :param type_:           type of scheme to calculate the face values with. Available types are in pyCFD_fields.calculated_fields.HRSFaceValue .
+    47                                                   :type type_:            string
+    48                                                   """
+    49        60          574      9.6      0.0          mesh_ = massflux_field.father[0]
+    50        60        18256    304.3      0.0          pyCFD_operators.generic_operator.GenericScalarOperator.__init__(self, mesh_)
+    51                                                   
+    52        60          375      6.2      0.0          cell_number = len(mesh_.cells)
+    53                                           #        self.A         = numpy.zeros((cell_number,cell_number))
+    54        60         8597    143.3      0.0          self.A         = scipy.sparse.dok_matrix((cell_number, cell_number))
+    55        60         1610     26.8      0.0          self.b         = numpy.zeros((cell_number,1))
+    56                                                   
+    57        60          241      4.0      0.0          if volume_field is not None:
+    58                                           #            self.x_old     = volume_field.V
+    59                                           #            self.x_old_old = volume_field.V
+    60        30          115      3.8      0.0              if type_ == "UDS":
+    61                                                           face_field = pyCFD_fields.calculated_fields.UpwindFaceValue(volume_field, massflux_field)
+    62        30          107      3.6      0.0              elif type_ == "STOIC":
+    63        30    123512045 4117068.2     63.2                  face_field = pyCFD_fields.calculated_fields.HRSFaceValue(volume_field, massflux_field, "STOIC")
+    64                                                       elif type_ == "MINMOD":
+    65                                                           face_field = pyCFD_fields.calculated_fields.HRSFaceValue(volume_field, massflux_field, "MINMOD")
+    66                                                       else:
+    67                                                           print type_+" surface interpolation is not supported, use 'UDS', 'MINMOD' or 'STOIC'"
+    68                                                           sys.exit()
+    69                                                       
+    70    222750       850432      3.8      0.4              for cell_i,cell_ in enumerate(mesh_.cells):
+    71   1559040      6639193      4.3      3.4                  for face_ in cell_.faces:
+    72   1336320     29217938     21.9     14.9                      self.b[cell_i] -= massflux_field.A[face_.id] * face_field.A[face_.id] * face_.get_Sf_sign(cell_)
+    73                                                   else:
+    74    222750       849429      3.8      0.4              for cell_i,cell_ in enumerate(mesh_.cells):
+    75   1559040      6660869      4.3      3.4                  for face_ in cell_.faces:
+    76   1336320     27750854     20.8     14.2                      self.b[cell_i] -= massflux_field.A[face_.id] * face_.get_Sf_sign(cell_)
+
+File: pyCFD_operators\explicit_operators.py
+Function: __init__ at line 84
+Total time: 52.0731 s
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    84                                               @profile
+    85                                               def __init__(self, volume_field, massflux_field, type_):
+    86                                                   r"""
+    87                                                   constructor for volume vector Divergence operator
+    88                                           
+    89                                                   :param volume_field:    volume field to calculate the divergence for
+    90                                                   :type volume_field:     pyCFD_fields.fields.VolumeField
+    91                                                   :param massflux_field:  surface field with massflux values
+    92                                                   :type massflux_field:   pyCFD_fields.fields.SurfaceScalarField
+    93                                                   :param type_:           type of scheme to calculate the face values with. Available types are in pyCFD_fields.calculated_fields.HRSFaceValue .
+    94                                                   :type type_:            string
+    95                                                   """
+    96        10          125     12.5      0.0          mesh_ = volume_field.father[0]
+    97        10         2673    267.3      0.0          pyCFD_operators.generic_operator.GenericVectorOperator.__init__(self, mesh_)
+    98                                                   
+    99                                                   # x component
+   100        10      1829404 182940.4      1.0          volume_field_x = volume_field.get_component_as_scalar_field(0)
+   101        10     59893525 5989352.5     33.6          divergence_x = Divergence(volume_field_x, massflux_field, type_)
+   102        10           95      9.5      0.0          self.AX = divergence_x.A
+   103        10          103     10.3      0.0          self.bX = divergence_x.b
+   104                                           #        self.xX_old = divergence_x.x_old
+   105                                           #        self.xX_old_old = divergence_x.x_old_old
+   106                                                   
+   107                                                   # y component
+   108        10      1844825 184482.5      1.0          volume_field_y = volume_field.get_component_as_scalar_field(1)
+   109        10     59031635 5903163.5     33.1          divergence_y = Divergence(volume_field_y, massflux_field, type_)
+   110        10           62      6.2      0.0          self.AY = divergence_y.A
+   111        10          227     22.7      0.0          self.bY = divergence_y.b
+   112                                           #        self.xY_old = divergence_y.x_old
+   113                                           #        self.xY_old_old = divergence_y.x_old_old
+   114                                                   
+   115                                                   # z component
+   116        10      1821157 182115.7      1.0          volume_field_z = volume_field.get_component_as_scalar_field(2)
+   117        10     54085872 5408587.2     30.3          divergence_z = Divergence(volume_field_z, massflux_field, type_)
+   118        10           59      5.9      0.0          self.AZ = divergence_z.A
+   119        10          337     33.7      0.0          self.bZ = divergence_z.b

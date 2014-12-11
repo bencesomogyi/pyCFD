@@ -1,0 +1,70 @@
+
+Processing mesh...
+MESH READ in 1.99612617493 s
+
+=========================
+MESH DATA:
+- number of vertices: 1024
+- number of faces: 1904
+-- number of boundary faces: 1024
+-- number of internal faces: 880
+- number of cells: 464
+- number of patches: 5
+-- inlet
+-- side
+-- walls
+-- outlet
+-- frontAndRear
+=========================
+
+Writing mesh file...
+   DONE in 0.212075948715 s
+
+tetra not tested yet!
+
+testMesh FINSHED
+Wrote profile results to testMesh.py.lprof
+Timer unit: 1e-06 s
+
+File: pyCFD_geometric_tools/geomTools.py
+Function: polygon_centroid_and_area at line 36
+Total time: 0.763982 s
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    36                                           @profile
+    37                                           def polygon_centroid_and_area(vertex_list):
+    38                                               """
+    39                                               calculate the centroid and area of a polygon from the list of its vertices
+    40                                               
+    41                                               Calculation steps:
+    42                                               * polygon is subdivided into triangles using the geometric centroid of the polygon
+    43                                               * centers of the sub-triangles and their area is calculated
+    44                                               * polygon centroid is calculated as surface weighted average of the sub triangles
+    45                                               * polygon area is calculated as the sum of sub triangle areas
+    46                                               
+    47                                               :param vertex_list: list of vertex objects defining the face
+    48                                               :type vertex_list: dict
+    49                                               :return: dictionary [weighted centroid, area]
+    50                                               :rtype: dict
+    51                                               """
+    52      1904         3851      2.0      0.5      number_of_vertices = len(vertex_list)
+    53      1904         2902      1.5      0.4      if number_of_vertices < 3:
+    54                                                   sys.exit("invalid face element with low number of vertices (< 3)!")
+    55                                               # get sub triangle coordinates
+    56      9520        40393      4.2      5.3      vertex_coords = numpy.array([vertex_list[i_vertex].coords for i_vertex in xrange(number_of_vertices)])
+    57      1904        74776     39.3      9.8      centroid = numpy.array([vertex_coords.sum(0) / float(number_of_vertices),] * number_of_vertices)
+    58      9520        42537      4.5      5.6      coords_a = numpy.array([vertex_coords[i_vertex] for i_vertex in xrange(number_of_vertices)])
+    59      1904        43906     23.1      5.7      coords_b = numpy.roll(coords_a,-1,0)
+    60                                               # calculate sub tirangle centers and areas
+    61      1904        26015     13.7      3.4      triangle_centers = numpy.add(numpy.add(centroid, coords_a), coords_b) /3.
+    62      1904       145531     76.4     19.0      area_vector = numpy.cross(numpy.add(centroid, -coords_a), numpy.add(centroid,-coords_b)) * 0.5
+    63      9520       231776     24.3     30.3      triangle_areas = numpy.array([numpy.linalg.norm(area_vector[i]) for i in xrange(number_of_vertices)])
+    64                                           #    triangle_areas = cy_geometric_tools.cy_triangle_areas(area_vector)
+    65                                               # calculate poligon weighted centroid and area    
+    66      9520        78705      8.3     10.3      weighted_centroid = numpy.array([triangle_centers[i] * triangle_areas[i] for i in xrange(number_of_vertices)])
+    67      1904        27853     14.6      3.6      area_sum = triangle_areas.sum()
+    68      1904        38973     20.5      5.1      weighted_centroid_sum = weighted_centroid.sum(0) / area_sum
+    69      1904         4065      2.1      0.5      result = [weighted_centroid_sum, area_sum]
+    70      1904         2699      1.4      0.4      return result        
+
